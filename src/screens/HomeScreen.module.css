@@ -1,0 +1,80 @@
+.screen {
+  padding-top: 20px;
+}
+
+/* ─── Hero ──────────────────────────────────────────────────────────────────── */
+.heroTitle {
+  font-size: 38px;
+  text-align: center;
+  background: linear-gradient(90deg, #ff6b9d, #ffb300, #26c6da, #ec407a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+
+.heroSub {
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Grid ──────────────────────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.charTile {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s, box-shadow 0.2s;
+  /* floating animation values */
+  animation-duration: 3.2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.charTile:hover {
+  transform: scale(1.04);
+  box-shadow: var(--shadow-deep);
+}
+
+.charImg {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+  max-height: 240px;
+}
+
+.charLabel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 10px;
+  background: linear-gradient(transparent, rgba(0 0 0 / 0.75));
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  text-align: left;
+}
+
+/* ─── CTA ───────────────────────────────────────────────────────────────────── */
+.btnPlay {
+  background: linear-gradient(135deg, #ff6b9d, #ff9a3c);
+  color: #fff;
+  margin-top: 4px;
+  text-decoration: none;
+}

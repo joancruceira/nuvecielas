@@ -1,0 +1,92 @@
+.card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  animation: nw-slide-up 0.35s ease both;
+  transition: transform 0.2s;
+  margin-bottom: 12px;
+}
+
+.card:hover  { transform: scale(1.01); }
+.card:focus  { outline: 2px solid rgba(255 255 255 / 0.5); outline-offset: 2px; }
+
+/* ─── Main row ──────────────────────────────────────────────────────────────── */
+.row {
+  display: flex;
+  align-items: stretch;
+  min-height: 140px;
+}
+
+.portrait {
+  width: 110px;
+  flex-shrink: 0;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  gap: 6px;
+}
+
+/* ─── Text ──────────────────────────────────────────────────────────────────── */
+.name {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.tagline {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+.power {
+  font-size: 12px;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* ─── Traits ────────────────────────────────────────────────────────────────── */
+.traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  list-style: none;
+}
+
+.trait {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(0 0 0 / 0.25);
+}
+
+/* ─── Expanded detail ───────────────────────────────────────────────────────── */
+.detail {
+  padding: 12px 14px;
+  border-top: 1px solid rgba(255 255 255 / 0.1);
+  animation: nw-slide-up 0.2s ease;
+}
+
+.description {
+  font-size: 13px;
+  opacity: 0.8;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.favorite {
+  font-size: 12px;
+  opacity: 0.6;
+  font-style: italic;
+}

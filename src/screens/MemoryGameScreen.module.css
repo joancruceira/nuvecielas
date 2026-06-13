@@ -1,0 +1,105 @@
+.screen {
+  position: relative;
+}
+
+/* ─── Header ────────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.backBtn {
+  padding: 6px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.backBtn:hover { background: var(--color-surface-hover); }
+
+.title {
+  font-size: 22px;
+}
+
+/* ─── Stats bar ─────────────────────────────────────────────────────────────── */
+.statsBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 2px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.resetBtn {
+  background: var(--color-surface);
+  border: none;
+  color: var(--color-text);
+  border-radius: 7px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+
+.resetBtn:hover { background: var(--color-surface-hover); }
+
+/* ─── Board ─────────────────────────────────────────────────────────────────── */
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+/* ─── Win overlay ───────────────────────────────────────────────────────────── */
+.winOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0 0 0 / 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 50;
+  border-radius: var(--radius-lg);
+  animation: nw-slide-up 0.3s ease;
+}
+
+.winTrophy {
+  font-size: 52px;
+  animation: nw-pulse 1s ease-in-out infinite;
+}
+
+.winTitle {
+  font-size: 30px;
+  color: #ffd700;
+}
+
+.winStars {
+  font-size: 34px;
+}
+
+.winMoves {
+  font-size: 14px;
+  opacity: 0.65;
+}
+
+.winBtn {
+  background: linear-gradient(135deg, #ffd700, #ff9800);
+  color: #000;
+  max-width: 200px;
+  font-size: 18px;
+  margin-top: 6px;
+}

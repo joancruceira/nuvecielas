@@ -1,0 +1,68 @@
+.heading {
+  font-size: 26px;
+  margin-bottom: 14px;
+  text-shadow: 0 2px 8px rgba(0 0 0 / 0.4);
+}
+
+/* ─── Featured card ─────────────────────────────────────────────────────────── */
+.featured {
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, #0d2e1a, #1a4a2e);
+  border: 1px solid rgba(100 200 100 / 0.2);
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-card);
+}
+
+.featuredTag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #4caf50;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.featuredTitle {
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.featuredDesc {
+  font-size: 13px;
+  opacity: 0.7;
+  margin: 7px 0 14px;
+  line-height: 1.5;
+}
+
+/* ─── Character thumbnails ──────────────────────────────────────────────────── */
+.thumbRow {
+  display: flex;
+  margin-bottom: 14px;
+}
+
+.thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  border: 2px solid rgba(255 255 255 / 0.3);
+  margin-left: -8px;
+}
+
+.thumb:first-child { margin-left: 0; }
+
+.btnPlay {
+  background: linear-gradient(135deg, #2e7d32, #43a047);
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+/* ─── Mini-games grid ───────────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}

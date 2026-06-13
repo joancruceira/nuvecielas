@@ -1,0 +1,183 @@
+/* ─── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Nunito:wght@400;700;900&display=swap');
+
+/* ─── Reset ─────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Design tokens ─────────────────────────────────────────────────────────── */
+:root {
+  /* Fonts */
+  --font-display: 'Bubblegum Sans', cursive;
+  --font-body: 'Nunito', sans-serif;
+
+  /* Palette */
+  --color-bg: #0d0d1f;
+  --color-surface: rgba(255 255 255 / 0.06);
+  --color-surface-hover: rgba(255 255 255 / 0.11);
+  --color-border: rgba(255 255 255 / 0.1);
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255 255 255 / 0.55);
+
+  /* Brand accents */
+  --color-nuveciela: #ff6b35;
+  --color-nuve:      #ffb300;
+  --color-lunaria:   #ec407a;
+  --color-ciela:     #26c6da;
+
+  /* Rainbow gradient (animated) */
+  --gradient-rainbow: linear-gradient(160deg, #ff6b9d, #ff9a3c, #ffcb40, #6be6c1, #5b8af5, #c26bff);
+
+  /* Layout */
+  --app-width:      430px;
+  --nav-height:     58px;
+  --screen-padding: 16px;
+  --radius-sm:  10px;
+  --radius-md:  16px;
+  --radius-lg:  20px;
+  --radius-xl:  24px;
+
+  /* Shadows */
+  --shadow-card:  0 8px 24px rgba(0 0 0 / 0.5);
+  --shadow-deep:  0 16px 48px rgba(0 0 0 / 0.6);
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────────── */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: #0a0a1a;
+  color: var(--color-text);
+  overflow: hidden;
+}
+
+/* ─── App shell ─────────────────────────────────────────────────────────────── */
+.nw-app {
+  position: relative;
+  width: var(--app-width);
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0 auto;
+  background: var(--color-bg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Rainbow background layer (applied to .nw-app::before) */
+.nw-app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-rainbow);
+  opacity: 0.16;
+  animation: nw-rainbow 8s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Screen wrapper ────────────────────────────────────────────────────────── */
+.nw-screen {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--screen-padding) var(--screen-padding) calc(var(--nav-height) + 16px);
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Typography helpers ────────────────────────────────────────────────────── */
+.nw-title {
+  font-family: var(--font-display);
+}
+
+/* ─── Button base ───────────────────────────────────────────────────────────── */
+.nw-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 20px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0 0 0 / 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.nw-btn:hover  { transform: scale(1.02); box-shadow: 0 10px 28px rgba(0 0 0 / 0.5); }
+.nw-btn:active { transform: scale(0.97); }
+
+.nw-btn-secondary {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.nw-btn-secondary:hover { background: var(--color-surface-hover); }
+
+/* ─── Scrollbar (webkit) ────────────────────────────────────────────────────── */
+.nw-screen::-webkit-scrollbar { width: 4px; }
+.nw-screen::-webkit-scrollbar-track { background: transparent; }
+.nw-screen::-webkit-scrollbar-thumb { background: rgba(255 255 255 / 0.15); border-radius: 4px; }
+
+/* ─── Animations ────────────────────────────────────────────────────────────── */
+@keyframes nw-rainbow {
+  from { filter: hue-rotate(0deg); }
+  to   { filter: hue-rotate(360deg); }
+}
+
+@keyframes nw-float-0 {
+  0%, 100% { transform: translateY(0)    rotate(-2deg); }
+  50%      { transform: translateY(-12px) rotate(2deg);  }
+}
+@keyframes nw-float-1 {
+  0%, 100% { transform: translateY(-6px) rotate(1deg);  }
+  50%      { transform: translateY(6px)  rotate(-2deg); }
+}
+@keyframes nw-float-2 {
+  0%, 100% { transform: translateY(4px)   rotate(2deg);  }
+  50%      { transform: translateY(-10px) rotate(-1deg); }
+}
+@keyframes nw-float-3 {
+  0%, 100% { transform: translateY(-4px) rotate(-1deg); }
+  50%      { transform: translateY(8px)  rotate(2deg);  }
+}
+
+@keyframes nw-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes nw-bounce-in {
+  0%   { transform: scale(0.8); opacity: 0; }
+  60%  { transform: scale(1.05); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes nw-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
