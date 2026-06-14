@@ -9,20 +9,20 @@
 
 import type { Character, NewCharacter } from '../types';
 
-import cielaImg     from '../assets/images/ciela.png';
-import lunariaImg   from '../assets/images/lunaria.png';
-import nuveImg      from '../assets/images/nuve.png';
+import cielaImg from '../assets/images/ciela.png';
+import lunariaImg from '../assets/images/lunaria.png';
+import nuveImg from '../assets/images/nuve.png';
 import nuvecielaImg from '../assets/images/nuveciela.png';
-import melliAImg    from '../assets/images/melli_amarilla.png';
-import melliCImg    from '../assets/images/melli_celeste.png';
-import natanImg     from '../assets/images/natan_run0.png';
+import melliAImg from '../assets/images/melli_amarilla.png';
+import melliCImg from '../assets/images/melli_celeste.png';
+import natanImg from '../assets/images/natan_run0.png';
 
 export const CHARACTERS: Character[] = [
   {
     id: 'nuveciela',
     name: 'Nuveciela',
     emoji: '🌙',
-    tagline: '¡Valiente y misteriosa!',
+    tagline: '¡Fuerte!',
     description:
       'La guardiana de las noches estrelladas. Protege a sus amigas con su energía oscura y brillante.',
     power: 'Doble salto alto + lanza bolas de fuego 🔥',
@@ -37,7 +37,7 @@ export const CHARACTERS: Character[] = [
     id: 'nuve',
     name: 'Nuve',
     emoji: '⭐',
-    tagline: '¡Curiosa y alegre!',
+    tagline: '¡Detallista, trabajadora y tranquila!',
     description:
       'Siempre con una pregunta nueva. Aprende algo diferente cada día y lo comparte con una gran sonrisa.',
     power: 'Vuela con doble salto. Al aterrizar aturde enemigos 🎨',
@@ -52,7 +52,7 @@ export const CHARACTERS: Character[] = [
     id: 'lunaria',
     name: 'Lunaria',
     emoji: '✨',
-    tagline: '¡Soñadora y mágica!',
+    tagline: '¡Inventora y única!',
     description:
       'Flota entre sueños y hace realidad los deseos de sus amigas con su magia arcoíris.',
     power: 'Mantener ↑ para flotar. Dispara rayos de sol ☀️',
@@ -67,7 +67,7 @@ export const CHARACTERS: Character[] = [
     id: 'ciela',
     name: 'Ciela',
     emoji: '💧',
-    tagline: '¡Libre y aventurera!',
+    tagline: '¡Sabia!',
     description:
       'Siempre lista para una nueva aventura. Corre más rápido que el viento y congela todo lo que toca.',
     power: 'Deslizamiento veloz. Dispara hielo ❄️ que congela enemigos',
