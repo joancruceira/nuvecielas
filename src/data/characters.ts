@@ -83,21 +83,21 @@ export const CHARACTERS: Character[] = [
 export const NEW_CHARACTERS: NewCharacter[] = [
   {
     id: 'melli-amarilla',
-    name: 'Melli ☀️',
+    name: 'Nina ☀️',
     accentColor: '#FFD600',
     image: melliAImg,
     isPixelArt: true,
   },
   {
     id: 'melli-celeste',
-    name: 'Melli 🩵',
+    name: 'Jazmin 🩵',
     accentColor: '#26C6DA',
     image: melliCImg,
     isPixelArt: true,
   },
   {
     id: 'natan',
-    name: 'Natan',
+    name: 'Super Natan',
     accentColor: '#1565C0',
     image: natanImg,
     isPixelArt: true,
