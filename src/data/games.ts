@@ -33,8 +33,9 @@ export const GAMES: GameEntry[] = [
     id: 'colors',
     title: 'Pinta con Lunaria',
     icon: '🎨',
-    available: false,
-    statusLabel: '⏳ Próximamente',
+    available: true,
+    screenId: 'colors',
+    statusLabel: '✓ Disponible',
   },
   {
     id: 'puzzle',

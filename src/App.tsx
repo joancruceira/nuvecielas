@@ -7,11 +7,12 @@ import { CharactersScreen } from './screens/CharactersScreen';
 import { GamesScreen } from './screens/GamesScreen';
 import { MemoryGameScreen } from './screens/MemoryGameScreen';
 import { GameFrameScreen } from './screens/GameFrameScreen';
+import { PaintScreen } from './screens/PaintScreen';
 import { EMBEDDED_GAMES } from './data/games';
 import './styles/theme.css';
 
 /** Screens that hide the bottom nav */
-const FULLSCREEN: ScreenId[] = ['memory', 'stars'];
+const FULLSCREEN: ScreenId[] = ['memory', 'stars', 'colors'];
 
 export default function App() {
   const [screen, setScreen] = useState<ScreenId>('home');
@@ -57,6 +58,10 @@ export default function App() {
           title={EMBEDDED_GAMES.stars.title}
           onBack={() => navigate('games')}
         />
+      )}
+
+      {screen === 'colors' && (
+        <PaintScreen onBack={() => navigate('games')} />
       )}
 
       {/* ─── Bottom nav ───────────────────────────────────────────────────── */}
