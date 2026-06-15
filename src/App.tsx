@@ -8,11 +8,14 @@ import { GamesScreen } from './screens/GamesScreen';
 import { MemoryGameScreen } from './screens/MemoryGameScreen';
 import { GameFrameScreen } from './screens/GameFrameScreen';
 import { PaintScreen } from './screens/PaintScreen';
+import { QuizScreen } from './screens/QuizScreen';
+import { PuzzleScreen } from './screens/PuzzleScreen';
 import { EMBEDDED_GAMES } from './data/games';
+import { playTap } from './utils/audio';
 import './styles/theme.css';
 
 /** Screens that hide the bottom nav */
-const FULLSCREEN: ScreenId[] = ['memory', 'stars', 'colors'];
+const FULLSCREEN: ScreenId[] = ['memory', 'stars', 'colors', 'quiz', 'puzzle'];
 
 export default function App() {
   const [screen, setScreen] = useState<ScreenId>('home');
@@ -20,6 +23,7 @@ export default function App() {
 
   /** Navigate to a screen, optionally resetting sub-state */
   function navigate(to: ScreenId) {
+    playTap();
     if (to !== 'characters') setActiveCharIdx(null);
     setScreen(to);
   }
@@ -62,6 +66,14 @@ export default function App() {
 
       {screen === 'colors' && (
         <PaintScreen onBack={() => navigate('games')} />
+      )}
+
+      {screen === 'quiz' && (
+        <QuizScreen onBack={() => navigate('games')} />
+      )}
+
+      {screen === 'puzzle' && (
+        <PuzzleScreen onBack={() => navigate('games')} />
       )}
 
       {/* ─── Bottom nav ───────────────────────────────────────────────────── */}

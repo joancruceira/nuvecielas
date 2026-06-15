@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback, type PointerEvent as ReactPointerEvent } from 'react';
+import { playTap } from '../utils/audio';
 import styles from './PaintScreen.module.css';
 import duomoImg from '../assets/coloring/duomo.jpg';
 
@@ -241,19 +242,19 @@ export function PaintScreen({ onBack }: PaintScreenProps) {
             key={c}
             className={`${styles.swatch} ${c === color ? styles.swatchActive : ''}`}
             style={{ background: c }}
-            onClick={() => setColor(c)}
+            onClick={() => { playTap(); setColor(c); }}
             aria-label={`Color ${c}`}
           />
         ))}
       </div>
 
       <div className={styles.tools}>
-        <button className={`${styles.tool} ${tool === 'bucket' ? styles.toolActive : ''}`} onClick={() => setTool('bucket')} title="Balde">🪣</button>
-        <button className={`${styles.tool} ${tool === 'brush' ? styles.toolActive : ''}`} onClick={() => setTool('brush')} title="Pincel">🖌️</button>
-        <button className={`${styles.tool} ${tool === 'sparkle' ? styles.toolActive : ''}`} onClick={() => setTool('sparkle')} title="Brillos">✨</button>
-        <button className={styles.tool} onClick={undo} title="Deshacer">↩️</button>
-        <button className={styles.tool} onClick={clearAll} title="Limpiar">🔄</button>
-        <button className={styles.tool} onClick={save} title="Guardar">💾</button>
+        <button className={`${styles.tool} ${tool === 'bucket' ? styles.toolActive : ''}`} onClick={() => { playTap(); setTool('bucket'); }} title="Balde">🪣</button>
+        <button className={`${styles.tool} ${tool === 'brush' ? styles.toolActive : ''}`} onClick={() => { playTap(); setTool('brush'); }} title="Pincel">🖌️</button>
+        <button className={`${styles.tool} ${tool === 'sparkle' ? styles.toolActive : ''}`} onClick={() => { playTap(); setTool('sparkle'); }} title="Brillos">✨</button>
+        <button className={styles.tool} onClick={() => { playTap(); undo(); }} title="Deshacer">↩️</button>
+        <button className={styles.tool} onClick={() => { playTap(); clearAll(); }} title="Limpiar">🔄</button>
+        <button className={styles.tool} onClick={() => { playTap(); save(); }} title="Guardar">💾</button>
       </div>
     </main>
   );

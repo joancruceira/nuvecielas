@@ -1,6 +1,7 @@
 import type { ScreenId } from '../types';
 import { CHARACTERS } from '../data/characters';
 import { BOSQUE_MAGICO_URL } from '../data/games';
+import { playTap } from '../utils/audio';
 import styles from './HomeScreen.module.css';
 
 const FLOAT_ANIMS = ['nw-float-0', 'nw-float-1', 'nw-float-2', 'nw-float-3'] as const;
@@ -41,6 +42,7 @@ export function HomeScreen({ onNavigate, onCharacterClick }: HomeScreenProps) {
         target="_blank"
         rel="noopener noreferrer"
         className={`nw-btn ${styles.btnPlay}`}
+        onClick={() => playTap()}
       >
         🎮 ¡Jugar al Bosque Mágico!
       </a>

@@ -1,6 +1,6 @@
 // ─── Navigation ───────────────────────────────────────────────────────────────
 
-export type ScreenId = 'home' | 'characters' | 'games' | 'memory' | 'stars' | 'colors';
+export type ScreenId = 'home' | 'characters' | 'games' | 'memory' | 'stars' | 'colors' | 'quiz' | 'puzzle';
 
 // ─── Characters ───────────────────────────────────────────────────────────────
 

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { MemoryCardData } from '../types';
+import { playTap, playSuccess, playError, playWin } from '../utils/audio';
 
 import nuvecielaImg from '../assets/images/nuveciela.png';
 import nuveImg from '../assets/images/nuve.png';
@@ -67,6 +68,8 @@ export function useMemoryGame(): UseMemoryGameReturn {
     (index: number) => {
       if (busy || cards[index].matched || cards[index].flipped) return;
 
+      playTap();
+
       const next = [...selected, index];
       setCards(prev =>
         prev.map((c, i) => (i === index ? { ...c, flipped: true } : c)),
@@ -91,8 +94,15 @@ export function useMemoryGame(): UseMemoryGameReturn {
               ? { ...c, matched: isMatch, flipped: isMatch }
               : c,
           );
-          if (isMatch && updated.every(c => c.matched)) {
-            setWon(true);
+          if (isMatch) {
+            if (updated.every(c => c.matched)) {
+              playWin();
+              setWon(true);
+            } else {
+              playSuccess();
+            }
+          } else {
+            playError();
           }
           return updated;
         });

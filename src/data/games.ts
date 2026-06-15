@@ -26,8 +26,9 @@ export const GAMES: GameEntry[] = [
     id: 'quiz',
     title: 'Quiz Estelar',
     icon: '🧩',
-    available: false,
-    statusLabel: '⏳ Próximamente',
+    available: true,
+    screenId: 'quiz',
+    statusLabel: '✓ Disponible',
   },
   {
     id: 'colors',
@@ -41,8 +42,9 @@ export const GAMES: GameEntry[] = [
     id: 'puzzle',
     title: 'Reto Nuveciela',
     icon: '👾',
-    available: false,
-    statusLabel: '⏳ Próximamente',
+    available: true,
+    screenId: 'puzzle',
+    statusLabel: '✓ Disponible',
   },
 ];
 

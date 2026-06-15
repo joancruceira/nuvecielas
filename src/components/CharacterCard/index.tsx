@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Character } from '../../types';
+import { playTap } from '../../utils/audio';
 import styles from './CharacterCard.module.css';
 
 interface CharacterCardProps {
@@ -25,11 +26,19 @@ export function CharacterCard({
         color: c.textColor,
         animationDelay: `${index * 0.08}s`,
       }}
-      onClick={() => setExpanded(prev => !prev)}
+      onClick={() => {
+        playTap();
+        setExpanded(prev => !prev);
+      }}
       role="button"
       aria-expanded={expanded}
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && setExpanded(prev => !prev)}
+      onKeyDown={e => {
+        if (e.key === 'Enter') {
+          playTap();
+          setExpanded(prev => !prev);
+        }
+      }}
     >
       {/* ─── Main row ─────────────────────────────────────────────────────── */}
       <div className={styles.row}>
