@@ -28,6 +28,8 @@ export interface NewCharacter {
   name: string;
   accentColor: string;
   image: string;
+  /** Rol en el universo Nuvecielas (creadoras, superhéroe, etc.) */
+  role?: string;
   /** Pixel art sprites need image-rendering: pixelated */
   isPixelArt?: boolean;
 }

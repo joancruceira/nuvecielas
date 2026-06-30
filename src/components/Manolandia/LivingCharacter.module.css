@@ -1,0 +1,160 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   LivingCharacter — un personaje VIVO.
+   Capas anidadas para que respiración + bob + balanceo + emote no peleen por
+   la propiedad transform (cada animación vive en su propio div).
+   Solo se animan transform y opacity.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.tile {
+  position: relative;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: visible;
+  transition: filter 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tile:hover { filter: brightness(1.06); }
+.tile:focus-visible {
+  outline: 3px solid rgba(255 255 255 / 0.85);
+  outline-offset: 3px;
+}
+
+/* Capa 1 — bob (flotar) */
+.bob {
+  animation: lc-bob var(--bob-dur, 3s) ease-in-out infinite;
+  animation-delay: var(--bob-delay, 0s);
+  will-change: transform;
+}
+
+/* Capa 2 — balanceo (rotar suave) */
+.sway {
+  animation: lc-sway var(--sway-dur, 5s) ease-in-out infinite;
+  animation-delay: var(--sway-delay, 0s);
+}
+
+/* Capa 3 — emote ocasional (microgesto). Sin animación por defecto. */
+.emote { transform-origin: 50% 80%; }
+.emote[data-emote='jump']   { animation: lc-jump   0.9s ease-out; }
+.emote[data-emote='wave']   { animation: lc-wave   1.0s ease-in-out; }
+.emote[data-emote='wiggle'] { animation: lc-wiggle 0.8s ease-in-out; }
+.emote[data-emote='lookUp'] { animation: lc-lookup 1.4s ease-in-out; }
+
+/* Capa 4 — respiración (escala) */
+.breathe {
+  display: block;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  animation: lc-breathe var(--breathe-dur, 3.5s) ease-in-out infinite;
+  animation-delay: var(--breathe-delay, 0s);
+  transform-origin: 50% 100%;
+}
+
+.img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+  max-height: 240px;
+}
+
+.label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 10px;
+  background: linear-gradient(transparent, rgba(0 0 0 / 0.75));
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  text-align: left;
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+  pointer-events: none;
+}
+
+/* ─── Burbuja de la anfitriona ─────────────────────────────────────────────── */
+.bubble {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: #fffdf7;
+  color: #2a2350;
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.1;
+  padding: 7px 12px;
+  border-radius: 14px;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(0 0 0 / 0.35);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+  animation: lc-bubble-in 0.35s ease-out forwards;
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: #fffdf7;
+}
+
+/* ─── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes lc-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(var(--breathe-scale, 1.02)); }
+}
+@keyframes lc-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(var(--bob-dist, 5px) * -1)); }
+}
+@keyframes lc-sway {
+  0%, 100% { transform: rotate(calc(var(--sway-deg, 2deg) * -1)); }
+  50%      { transform: rotate(var(--sway-deg, 2deg)); }
+}
+@keyframes lc-jump {
+  0%   { transform: translateY(0)     scaleY(1); }
+  25%  { transform: translateY(-14px) scaleY(1.05); }
+  55%  { transform: translateY(0)     scaleY(0.94); }
+  75%  { transform: translateY(-4px)  scaleY(1.02); }
+  100% { transform: translateY(0)     scaleY(1); }
+}
+@keyframes lc-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(7deg); }
+  50%      { transform: rotate(-5deg); }
+  75%      { transform: rotate(5deg); }
+}
+@keyframes lc-wiggle {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-5px); }
+  40%      { transform: translateX(5px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(3px); }
+}
+@keyframes lc-lookup {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  40%, 60% { transform: translateY(-3px) scaleY(1.015); }
+}
+@keyframes lc-bubble-in {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(4px) scale(0.85); }
+  60%  { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.04); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+/* ─── Movimiento reducido: calmar, no matar ────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .bob, .sway, .emote { animation: none !important; }
+  /* se conserva la respiración, pero más lenta y sutil */
+  .breathe { animation-duration: 6s; }
+  .bubble  { animation: none; opacity: 1; transform: translateX(-50%) scale(1); }
+}

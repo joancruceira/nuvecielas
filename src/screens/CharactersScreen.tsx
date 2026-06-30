@@ -26,7 +26,7 @@ export function CharactersScreen({ initialCharacterIndex }: CharactersScreenProp
       </section>
 
       {/* ─── Coming soon ──────────────────────────────────────────────────── */}
-      <h2 className={`nw-title ${styles.comingSoonTitle}`}>🔮 Próximamente...</h2>
+      <h2 className={`nw-title ${styles.comingSoonTitle}`}>💜 La familia detrás de Nuvecielas</h2>
 
       <section className={styles.comingSoonGrid} aria-label="Personajes próximamente">
         {NEW_CHARACTERS.map(char => (

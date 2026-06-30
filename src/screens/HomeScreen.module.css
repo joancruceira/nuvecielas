@@ -2,6 +2,12 @@
   padding-top: 20px;
 }
 
+/* Contenido por encima del mundo vivo */
+.content {
+  position: relative;
+  z-index: 1;
+}
+
 /* ─── Hero ──────────────────────────────────────────────────────────────────── */
 .heroTitle {
   font-size: 38px;
@@ -10,65 +16,25 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: none;
+  /* legibilidad sobre cualquier cielo (día brillante incluido) */
+  filter: drop-shadow(0 2px 5px rgba(0 0 0 / 0.55));
 }
 
 .heroSub {
   text-align: center;
   font-size: 13px;
-  color: var(--color-text-muted);
+  color: rgba(255 255 255 / 0.9);
   margin-top: 4px;
   letter-spacing: 0.5px;
+  text-shadow: 0 1px 4px rgba(0 0 0 / 0.6);
 }
 
-/* ─── Grid ──────────────────────────────────────────────────────────────────── */
+/* ─── Grid de personajes ────────────────────────────────────────────────────── */
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin: 18px 0;
-}
-
-.charTile {
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  background: none;
-  border: none;
-  padding: 0;
-  box-shadow: var(--shadow-card);
-  transition: transform 0.2s, box-shadow 0.2s;
-  /* floating animation values */
-  animation-duration: 3.2s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-
-.charTile:hover {
-  transform: scale(1.04);
-  box-shadow: var(--shadow-deep);
-}
-
-.charImg {
-  width: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: top center;
-  max-height: 240px;
-}
-
-.charLabel {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 8px 10px;
-  background: linear-gradient(transparent, rgba(0 0 0 / 0.75));
-  font-family: var(--font-display);
-  font-size: 16px;
-  letter-spacing: 0.5px;
-  text-align: left;
 }
 
 /* ─── CTA ───────────────────────────────────────────────────────────────────── */

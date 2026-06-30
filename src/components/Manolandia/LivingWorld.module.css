@@ -1,0 +1,165 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   LivingWorld — el cielo vivo de Manolandia detrás del contenido del launcher.
+   Capa decorativa: pointer-events none (los taps pasan al contenido).
+   Profundidad por parallax: cada wrapper .*Layer SOLO aplica translate de
+   parallax (lee --mx/--my); sus hijos animan libremente sin pelear transform.
+   Solo transform/opacity. Hora del día por [data-tod].
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.world {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  --mx: 0;
+  --my: 0;
+}
+
+.layer {
+  position: absolute;
+  inset: -8% -8% -8% -8%; /* margen para que el parallax no descubra bordes */
+  will-change: transform;
+}
+
+/* ─── Cielo (sin parallax) ─────────────────────────────────────────────────── */
+.sky {
+  position: absolute;
+  inset: 0;
+  transition: opacity 1.5s ease;
+}
+.world[data-tod='dawn']  .sky { background: linear-gradient(180deg, #3a2a6a 0%, #ff8fa3 56%, #ffd9a0 100%); }
+.world[data-tod='day']   .sky { background: linear-gradient(180deg, #2f7fd6 0%, #5bb0ef 50%, #c2e6ff 100%); }
+.world[data-tod='dusk']  .sky { background: linear-gradient(180deg, #241a4d 0%, #7c3a8f 42%, #ff7a59 76%, #ffd06b 100%); }
+.world[data-tod='night'] .sky { background: linear-gradient(180deg, #08081a 0%, #12102e 55%, #1c1640 100%); }
+
+/* ─── Astro (sol / luna) ───────────────────────────────────────────────────── */
+.celestialLayer { transform: translate3d(calc(var(--mx) * 8px), calc(var(--my) * 8px), 0); }
+.celestial {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  top: 14%;
+  right: 16%;
+  filter: blur(0.5px);
+}
+.world[data-tod='dawn']  .celestial { background: radial-gradient(circle, #fff3d6 0%, #ffcaa0 55%, transparent 70%); top: 34%; right: 22%; }
+.world[data-tod='day']   .celestial { background: radial-gradient(circle, #fffdf0 0%, #ffe27a 55%, transparent 70%); top: 12%; right: 18%; }
+.world[data-tod='dusk']  .celestial { background: radial-gradient(circle, #ffe6b0 0%, #ff8a4a 55%, transparent 72%); top: 46%; right: 20%; }
+.world[data-tod='night'] .celestial { background: radial-gradient(circle, #fdfdf5 0%, #d7d9ef 58%, transparent 72%); top: 7%; right: 5%; box-shadow: 0 0 40px rgba(215,217,239,0.35); }
+
+/* ─── Estrellas (noche/atardecer) ──────────────────────────────────────────── */
+.starsLayer { transform: translate3d(calc(var(--mx) * 4px), calc(var(--my) * 4px), 0); opacity: 0; transition: opacity 1.5s ease; }
+.world[data-tod='night'] .starsLayer { opacity: 1; }
+.world[data-tod='dusk']  .starsLayer { opacity: 0.45; }
+.stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 70% 20%, #fff, transparent),
+    radial-gradient(1px 1px   at 45% 50%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 85% 40%, #fff, transparent),
+    radial-gradient(1px 1px   at 30% 65%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 60% 70%, #fff, transparent),
+    radial-gradient(1px 1px   at 12% 80%, #fff, transparent);
+  animation: lw-twinkle 4s ease-in-out infinite;
+}
+
+/* ─── Nubes ────────────────────────────────────────────────────────────────── */
+.cloudsLayer { transform: translate3d(calc(var(--mx) * 16px), calc(var(--my) * 10px), 0); }
+.cloud {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.85), rgba(255,255,255,0) 70%);
+  filter: blur(6px);
+  opacity: 0.22;
+  will-change: transform;
+}
+.cloud1 { width: 180px; height: 70px; top: 18%; left: -30%; animation: lw-drift 90s linear infinite; }
+.cloud2 { width: 130px; height: 54px; top: 40%; left: -30%; animation: lw-drift 120s linear infinite; animation-delay: -40s; opacity: 0.16; }
+.cloud3 { width: 220px; height: 80px; top: 9%;  left: -30%; animation: lw-drift 150s linear infinite; animation-delay: -90s; opacity: 0.13; }
+
+/* ─── Estrella fugaz (atardecer/noche) ─────────────────────────────────────── */
+.shootingStar {
+  position: absolute;
+  top: 12%;
+  left: 75%;
+  width: 90px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0), #fff);
+  opacity: 0;
+  transform: rotate(28deg);
+}
+.world[data-tod='night'] .shootingStar { animation: lw-shoot 14s ease-in infinite; }
+.world[data-tod='dusk']  .shootingStar { animation: lw-shoot 22s ease-in infinite; }
+
+/* ─── Mariposa ─────────────────────────────────────────────────────────────── */
+.butterflyLayer { transform: translate3d(calc(var(--mx) * 26px), calc(var(--my) * 18px), 0); }
+.butterfly {
+  position: absolute;
+  top: 60%;
+  left: -8%;
+  width: 26px;
+  height: 26px;
+  opacity: 0.85;
+  animation: lw-flutter 38s linear infinite;
+  will-change: transform;
+}
+.wing { transform-origin: 50% 50%; animation: lw-wings 0.28s ease-in-out infinite; }
+.wingR { animation-direction: reverse; }
+
+/* ─── Pajarito ─────────────────────────────────────────────────────────────── */
+.birdLayer { transform: translate3d(calc(var(--mx) * 20px), calc(var(--my) * 14px), 0); }
+.bird {
+  position: absolute;
+  top: 22%;
+  left: -10%;
+  width: 22px;
+  height: 14px;
+  opacity: 0.5;
+  animation: lw-fly 46s linear infinite;
+  animation-delay: -12s;
+  will-change: transform;
+}
+.birdWing { transform-origin: 50% 50%; animation: lw-flap 0.5s ease-in-out infinite; }
+
+/* ─── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes lw-twinkle { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes lw-drift { from { transform: translateX(0); } to { transform: translateX(160vw); } }
+@keyframes lw-shoot {
+  0%, 88%  { opacity: 0; transform: translate(0, 0) rotate(28deg); }
+  90%      { opacity: 1; }
+  100%     { opacity: 0; transform: translate(-220px, 120px) rotate(28deg); }
+}
+@keyframes lw-flutter {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(30vw, -22px); }
+  50%  { transform: translate(60vw, 14px); }
+  75%  { transform: translate(95vw, -18px); }
+  100% { transform: translate(125vw, 6px); }
+}
+@keyframes lw-wings {
+  0%, 100% { transform: scaleX(1); }
+  50%      { transform: scaleX(0.35); }
+}
+@keyframes lw-fly {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(60vw, -16px); }
+  100% { transform: translate(125vw, 8px); }
+}
+@keyframes lw-flap {
+  0%, 100% { transform: rotate(-18deg); }
+  50%      { transform: rotate(14deg); }
+}
+
+/* ─── Movimiento reducido: el mundo se calma (no muere) ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .cloud, .shootingStar, .butterfly, .bird, .wing, .birdWing, .stars {
+    animation: none !important;
+  }
+  .butterfly, .bird { opacity: 0; } /* sin movimiento, se retiran para no quedar congelados */
+  .starsLayer { opacity: var(--stars-static-opacity, 1); }
+}

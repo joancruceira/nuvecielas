@@ -86,6 +86,7 @@ export const NEW_CHARACTERS: NewCharacter[] = [
     name: 'Nina ☀️',
     accentColor: '#FFD600',
     image: melliAImg,
+    role: 'Artista y directora creativa del universo Nuvecielas y personaje de NuveBosque.',
     isPixelArt: true,
   },
   {
@@ -93,6 +94,7 @@ export const NEW_CHARACTERS: NewCharacter[] = [
     name: 'Jazmin 🩵',
     accentColor: '#26C6DA',
     image: melliCImg,
+    role: 'Artista y directora creativa del universo Nuvecielas y personaje de NuveBosque.',
     isPixelArt: true,
   },
   {
@@ -100,6 +102,7 @@ export const NEW_CHARACTERS: NewCharacter[] = [
     name: 'Super Natan',
     accentColor: '#1565C0',
     image: natanImg,
+    role: 'Compañero del proceso creativo y superhéroe del juego.',
     isPixelArt: true,
   },
 ];

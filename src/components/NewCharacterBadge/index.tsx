@@ -8,7 +8,6 @@ interface NewCharacterBadgeProps {
 export function NewCharacterBadge({ character: c }: NewCharacterBadgeProps) {
   return (
     <div className={styles.badge} style={{ borderColor: `${c.accentColor}33` }}>
-      <span className={styles.pill}>PRONTO</span>
       <img
         src={c.image}
         alt={c.name}
@@ -17,6 +16,7 @@ export function NewCharacterBadge({ character: c }: NewCharacterBadgeProps) {
       <span className={styles.name} style={{ color: c.accentColor }}>
         {c.name}
       </span>
+      {c.role && <span className={styles.role}>{c.role}</span>}
     </div>
   );
 }
