@@ -34,6 +34,19 @@ export interface NewCharacter {
   isPixelArt?: boolean;
 }
 
+// ─── Jugadoras ────────────────────────────────────────────────────────────────
+
+/** Quién está del otro lado de la pantalla (Nina, Jazmín, …). */
+export interface Player {
+  id: string;
+  name: string;
+  emoji: string;
+  /** Color de acento para el selector y el chip de perfil */
+  color: string;
+  /** Recorte chico de la cara — NO el sprite de cuerpo entero (pesa MB) */
+  avatar: string;
+}
+
 // ─── Games ────────────────────────────────────────────────────────────────────
 
 export interface GameEntry {

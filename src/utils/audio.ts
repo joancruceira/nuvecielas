@@ -87,6 +87,35 @@ export function playError(): void {
   }
 }
 
+/** Atrapar algo del mundo: campanita corta y brillante, sin fanfarria. */
+export function playWish(): void {
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+
+    const playNote = (freq: number, start: number, duration: number) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, start);
+
+      gain.gain.setValueAtTime(0.1, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + duration);
+    };
+
+    // Campanita: quinta ascendente con cola larga
+    playNote(1174.66, now, 0.18);        // D6
+    playNote(1567.98, now + 0.05, 0.45); // G6
+  } catch (e) {
+    console.warn('Audio play failed', e);
+  }
+}
+
 export function playWin(): void {
   try {
     const ctx = getAudioContext();

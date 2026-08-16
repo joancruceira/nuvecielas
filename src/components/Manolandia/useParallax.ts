@@ -8,8 +8,8 @@ import { useEffect, useRef } from 'react';
  * - Throttle por requestAnimationFrame (nunca más de 1 escritura por frame).
  * - Si `enabled` es false (p. ej. movimiento reducido), centra y no escucha nada.
  */
-export function useParallax(enabled: boolean) {
-  const ref = useRef<HTMLDivElement>(null);
+export function useParallax<T extends HTMLElement = HTMLDivElement>(enabled: boolean) {
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     const el = ref.current;

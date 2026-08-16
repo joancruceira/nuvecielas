@@ -1,22 +1,26 @@
-import { useReducedMotion } from '../../hooks/useReducedMotion';
-import { useTimeOfDay } from './useTimeOfDay';
-import { useParallax } from './useParallax';
+import type { TimeOfDay } from './useTimeOfDay';
 import styles from './LivingWorld.module.css';
+
+interface LivingWorldProps {
+  /** Franja horaria actual; la decide quien monta el mundo. */
+  tod: TimeOfDay;
+}
 
 /**
  * El cielo vivo de Manolandia detrás del launcher.
  * - Hora del día (reloj) → paleta del cielo, astro, estrellas.
- * - Parallax muy suave (puntero/giroscopio), desactivado con movimiento reducido.
- * - Vida ambiental mínima: nubes, estrella fugaz, una mariposa, un pajarito.
- * Capa puramente decorativa: aria-hidden + pointer-events none.
+ * - Vida ambiental mínima: nubes, una mariposa, un pajarito.
+ *
+ * Capa puramente decorativa: aria-hidden + pointer-events none. Lo que se puede
+ * tocar (la estrella fugaz) vive fuera de acá, en `ShootingStar`.
+ *
+ * El parallax lo aplica la pantalla contenedora sobre sí misma: escribe
+ * `--mx`/`--my`, que se heredan por CSS hasta acá y hasta los personajes. Así
+ * hay un solo listener de puntero para todo el Home.
  */
-export function LivingWorld() {
-  const reduced = useReducedMotion();
-  const tod = useTimeOfDay();
-  const ref = useParallax(!reduced);
-
+export function LivingWorld({ tod }: LivingWorldProps) {
   return (
-    <div ref={ref} className={styles.world} data-tod={tod} aria-hidden="true">
+    <div className={styles.world} data-tod={tod} aria-hidden="true">
       {/* Cielo */}
       <div className={styles.sky} />
 
@@ -29,9 +33,6 @@ export function LivingWorld() {
       <div className={`${styles.layer} ${styles.celestialLayer}`}>
         <div className={styles.celestial} />
       </div>
-
-      {/* Estrella fugaz (atardecer/noche, ocasional) */}
-      <div className={styles.shootingStar} />
 
       {/* Nubes lentas */}
       <div className={`${styles.layer} ${styles.cloudsLayer}`}>

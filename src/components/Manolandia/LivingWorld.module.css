@@ -6,14 +6,15 @@
    Solo transform/opacity. Hora del día por [data-tod].
    ─────────────────────────────────────────────────────────────────────────── */
 
+/* --mx/--my NO se declaran acá: se heredan de la pantalla contenedora, que es
+   la que escucha el puntero. El fallback `var(--mx, 0)` cubre el caso de montar
+   el mundo sin parallax. */
 .world {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-  --mx: 0;
-  --my: 0;
 }
 
 .layer {
@@ -34,7 +35,7 @@
 .world[data-tod='night'] .sky { background: linear-gradient(180deg, #08081a 0%, #12102e 55%, #1c1640 100%); }
 
 /* ─── Astro (sol / luna) ───────────────────────────────────────────────────── */
-.celestialLayer { transform: translate3d(calc(var(--mx) * 8px), calc(var(--my) * 8px), 0); }
+.celestialLayer { transform: translate3d(calc(var(--mx, 0) * 8px), calc(var(--my, 0) * 8px), 0); }
 .celestial {
   position: absolute;
   width: 120px;
@@ -50,7 +51,7 @@
 .world[data-tod='night'] .celestial { background: radial-gradient(circle, #fdfdf5 0%, #d7d9ef 58%, transparent 72%); top: 7%; right: 5%; box-shadow: 0 0 40px rgba(215,217,239,0.35); }
 
 /* ─── Estrellas (noche/atardecer) ──────────────────────────────────────────── */
-.starsLayer { transform: translate3d(calc(var(--mx) * 4px), calc(var(--my) * 4px), 0); opacity: 0; transition: opacity 1.5s ease; }
+.starsLayer { transform: translate3d(calc(var(--mx, 0) * 4px), calc(var(--my, 0) * 4px), 0); opacity: 0; transition: opacity 1.5s ease; }
 .world[data-tod='night'] .starsLayer { opacity: 1; }
 .world[data-tod='dusk']  .starsLayer { opacity: 0.45; }
 .stars {
@@ -68,7 +69,7 @@
 }
 
 /* ─── Nubes ────────────────────────────────────────────────────────────────── */
-.cloudsLayer { transform: translate3d(calc(var(--mx) * 16px), calc(var(--my) * 10px), 0); }
+.cloudsLayer { transform: translate3d(calc(var(--mx, 0) * 16px), calc(var(--my, 0) * 10px), 0); }
 .cloud {
   position: absolute;
   border-radius: 50%;
@@ -81,23 +82,11 @@
 .cloud2 { width: 130px; height: 54px; top: 40%; left: -30%; animation: lw-drift 120s linear infinite; animation-delay: -40s; opacity: 0.16; }
 .cloud3 { width: 220px; height: 80px; top: 9%;  left: -30%; animation: lw-drift 150s linear infinite; animation-delay: -90s; opacity: 0.13; }
 
-/* ─── Estrella fugaz (atardecer/noche) ─────────────────────────────────────── */
-.shootingStar {
-  position: absolute;
-  top: 12%;
-  left: 75%;
-  width: 90px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, rgba(255,255,255,0), #fff);
-  opacity: 0;
-  transform: rotate(28deg);
-}
-.world[data-tod='night'] .shootingStar { animation: lw-shoot 14s ease-in infinite; }
-.world[data-tod='dusk']  .shootingStar { animation: lw-shoot 22s ease-in infinite; }
+/* La estrella fugaz se mudó a ShootingStar: ahora se puede atrapar, y por eso
+   no puede vivir en una capa con pointer-events: none. */
 
 /* ─── Mariposa ─────────────────────────────────────────────────────────────── */
-.butterflyLayer { transform: translate3d(calc(var(--mx) * 26px), calc(var(--my) * 18px), 0); }
+.butterflyLayer { transform: translate3d(calc(var(--mx, 0) * 26px), calc(var(--my, 0) * 18px), 0); }
 .butterfly {
   position: absolute;
   top: 60%;
@@ -112,7 +101,7 @@
 .wingR { animation-direction: reverse; }
 
 /* ─── Pajarito ─────────────────────────────────────────────────────────────── */
-.birdLayer { transform: translate3d(calc(var(--mx) * 20px), calc(var(--my) * 14px), 0); }
+.birdLayer { transform: translate3d(calc(var(--mx, 0) * 20px), calc(var(--my, 0) * 14px), 0); }
 .bird {
   position: absolute;
   top: 22%;
@@ -129,11 +118,6 @@
 /* ─── Keyframes ────────────────────────────────────────────────────────────── */
 @keyframes lw-twinkle { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
 @keyframes lw-drift { from { transform: translateX(0); } to { transform: translateX(160vw); } }
-@keyframes lw-shoot {
-  0%, 88%  { opacity: 0; transform: translate(0, 0) rotate(28deg); }
-  90%      { opacity: 1; }
-  100%     { opacity: 0; transform: translate(-220px, 120px) rotate(28deg); }
-}
 @keyframes lw-flutter {
   0%   { transform: translate(0, 0); }
   25%  { transform: translate(30vw, -22px); }
@@ -157,7 +141,7 @@
 
 /* ─── Movimiento reducido: el mundo se calma (no muere) ─────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .cloud, .shootingStar, .butterfly, .bird, .wing, .birdWing, .stars {
+  .cloud, .butterfly, .bird, .wing, .birdWing, .stars {
     animation: none !important;
   }
   .butterfly, .bird { opacity: 0; } /* sin movimiento, se retiran para no quedar congelados */

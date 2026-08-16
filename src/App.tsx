@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ScreenId } from './types';
 
+import { useHashRoute } from './hooks/useHashRoute';
 import { BottomNav } from './components/BottomNav';
 import { HomeScreen } from './screens/HomeScreen';
 import { CharactersScreen } from './screens/CharactersScreen';
@@ -18,20 +19,20 @@ import './styles/theme.css';
 const FULLSCREEN: ScreenId[] = ['memory', 'stars', 'colors', 'quiz', 'puzzle'];
 
 export default function App() {
-  const [screen, setScreen] = useState<ScreenId>('home');
+  const [screen, goTo] = useHashRoute();
   const [activeCharIdx, setActiveCharIdx] = useState<number | null>(null);
 
   /** Navigate to a screen, optionally resetting sub-state */
   function navigate(to: ScreenId) {
     playTap();
     if (to !== 'characters') setActiveCharIdx(null);
-    setScreen(to);
+    goTo(to);
   }
 
   /** Tap a character on HomeScreen → go to Characters with that card expanded */
   function openCharacter(index: number) {
     setActiveCharIdx(index);
-    setScreen('characters');
+    goTo('characters');
   }
 
   return (

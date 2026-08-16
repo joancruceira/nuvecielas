@@ -1,0 +1,93 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   ShootingStar — la estrella fugaz que SÍ se puede tocar.
+   El botón es un área de toque grande e invisible (un dedo de nena necesita
+   ~44px); lo que se ve es el `.streak` de 2px que hay adentro.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.star {
+  position: absolute;
+  z-index: 2; /* por encima del mundo, por debajo de nada que importe */
+  width: 132px;
+  height: 52px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.star:focus-visible {
+  outline: 3px solid rgba(255 255 255 / 0.85);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* La estela visible */
+.streak {
+  width: 90px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+  transform: rotate(28deg);
+}
+
+.flying {
+  animation: ss-fly var(--flight-ms, 1900ms) ease-in forwards;
+}
+
+/* Al atraparla se congela en el sitio y estalla */
+.caught {
+  animation: none;
+}
+.caught .streak {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+/* ─── Estallido ────────────────────────────────────────────────────────────── */
+.burst {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px #ffe27a;
+  transform: rotate(calc(var(--i) * 60deg)) translateX(0);
+  animation: ss-spark 0.9s ease-out forwards;
+}
+
+/* ─── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes ss-fly {
+  0% { opacity: 0; transform: translate(0, 0); }
+  12% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-190px, 105px); }
+}
+
+@keyframes ss-spark {
+  0% { opacity: 1; transform: rotate(calc(var(--i) * 60deg)) translateX(0) scale(1); }
+  100% { opacity: 0; transform: rotate(calc(var(--i) * 60deg)) translateX(34px) scale(0.3); }
+}
+
+/* ─── Movimiento reducido: aparece quieta, sin viajar, y dura más ──────────── */
+@media (prefers-reduced-motion: reduce) {
+  .flying { animation: ss-appear var(--flight-ms, 3000ms) ease-in-out forwards; }
+  .spark { animation-duration: 0.4s; }
+
+  @keyframes ss-appear {
+    0% { opacity: 0; }
+    15%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+}

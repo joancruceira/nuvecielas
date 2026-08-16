@@ -37,14 +37,25 @@
   animation-delay: var(--sway-delay, 0s);
 }
 
-/* Capa 3 — emote ocasional (microgesto). Sin animación por defecto. */
+/* Capa 3 — "te mira": se inclina hacia el dedo/cursor.
+   Lee --mx/--my heredadas de la pantalla (un solo listener para todo el Home).
+   La transition suaviza el salto entre frames del parallax. */
+.look {
+  transform:
+    translate3d(calc(var(--mx, 0) * 5px), calc(var(--my, 0) * 3px), 0)
+    rotate(calc(var(--mx, 0) * 1.4deg));
+  transform-origin: 50% 90%;
+  transition: transform 0.25s ease-out;
+}
+
+/* Capa 4 — emote ocasional (microgesto). Sin animación por defecto. */
 .emote { transform-origin: 50% 80%; }
 .emote[data-emote='jump']   { animation: lc-jump   0.9s ease-out; }
 .emote[data-emote='wave']   { animation: lc-wave   1.0s ease-in-out; }
 .emote[data-emote='wiggle'] { animation: lc-wiggle 0.8s ease-in-out; }
 .emote[data-emote='lookUp'] { animation: lc-lookup 1.4s ease-in-out; }
 
-/* Capa 4 — respiración (escala) */
+/* Capa 5 — respiración (escala) */
 .breathe {
   display: block;
   border-radius: var(--radius-md);
@@ -154,6 +165,7 @@
 /* ─── Movimiento reducido: calmar, no matar ────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .bob, .sway, .emote { animation: none !important; }
+  .look { transform: none; transition: none; }
   /* se conserva la respiración, pero más lenta y sutil */
   .breathe { animation-duration: 6s; }
   .bubble  { animation: none; opacity: 1; transform: translateX(-50%) scale(1); }

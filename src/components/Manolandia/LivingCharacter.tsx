@@ -14,6 +14,13 @@ interface LivingCharacterProps {
   character: Character;
   /** Tap → abrir la ficha del personaje (navegación existente, sin cambios). */
   onOpen: () => void;
+  /**
+   * Qué dice, si es la anfitriona. Se pasa desde afuera porque depende de cosas
+   * que el personaje no conoce: quién está jugando y qué hora es.
+   * Debe venir memoizado (si cambia de identidad, el ciclo de burbujas
+   * arranca de nuevo).
+   */
+  phrases?: readonly string[];
 }
 
 /**
@@ -24,7 +31,11 @@ interface LivingCharacterProps {
  * Listo para evolucionar a sprite-sheet por frames cuando esos assets existan
  * (ver docs/ETAPA1 §assets): bastaría con cambiar el contenido de `.breathe`.
  */
-export function LivingCharacter({ character, onOpen }: LivingCharacterProps) {
+export function LivingCharacter({
+  character,
+  onOpen,
+  phrases = HOSTESS_PHRASES,
+}: LivingCharacterProps) {
   const reduced = useReducedMotion();
   const p = PERSONALITIES[character.id] ?? DEFAULT_PERSONALITY;
 
@@ -74,13 +85,16 @@ export function LivingCharacter({ character, onOpen }: LivingCharacterProps) {
   const [phrase, setPhrase] = useState<string | null>(null);
   const phraseIdx = useRef(0);
   useEffect(() => {
-    if (!p.hostess) return;
+    if (!p.hostess || phrases.length === 0) return;
     let showTimer: number;
     let hideTimer: number;
 
+    // Frases nuevas (cambió de jugadora, cambió la hora) → empieza por el saludo.
+    phraseIdx.current = 0;
+
     const cycle = (firstDelay: number) => {
       showTimer = window.setTimeout(() => {
-        setPhrase(HOSTESS_PHRASES[phraseIdx.current % HOSTESS_PHRASES.length]);
+        setPhrase(phrases[phraseIdx.current % phrases.length]);
         phraseIdx.current += 1;
         hideTimer = window.setTimeout(() => {
           setPhrase(null);
@@ -88,13 +102,14 @@ export function LivingCharacter({ character, onOpen }: LivingCharacterProps) {
         }, 3500);
       }, firstDelay);
     };
-    cycle(1800); // primer saludo poco después de llegar
+    cycle(1200); // primer saludo poco después de llegar
 
     return () => {
       window.clearTimeout(showTimer);
       window.clearTimeout(hideTimer);
+      setPhrase(null);
     };
-  }, [p.hostess]);
+  }, [p.hostess, phrases]);
 
   return (
     <button
@@ -108,13 +123,16 @@ export function LivingCharacter({ character, onOpen }: LivingCharacterProps) {
     >
       <div className={styles.bob}>
         <div className={styles.sway}>
-          <div
-            className={styles.emote}
-            data-emote={emoting ? p.emote : undefined}
-          >
-            <span className={styles.breathe}>
-              <img src={character.image} alt="" className={styles.img} />
-            </span>
+          {/* Mira hacia donde está el dedo/cursor (lee --mx/--my heredadas) */}
+          <div className={styles.look}>
+            <div
+              className={styles.emote}
+              data-emote={emoting ? p.emote : undefined}
+            >
+              <span className={styles.breathe}>
+                <img src={character.image} alt="" className={styles.img} />
+              </span>
+            </div>
           </div>
         </div>
       </div>
