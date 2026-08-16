@@ -35,8 +35,6 @@ export function GamesScreen({ onNavigate }: GamesScreenProps) {
 
         <a
           href={BOSQUE_MAGICO_URL}
-          target="_blank"
-          rel="noopener noreferrer"
           className={`nw-btn ${styles.btnPlay}`}
         >
           ▶ ¡Jugar ahora!

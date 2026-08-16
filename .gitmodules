@@ -1,0 +1,6 @@
+[submodule "public/bosque"]
+	path = public/bosque
+	url = https://github.com/joancruceira/nuvecielasPlatformer.git
+[submodule "public/estrellas"]
+	path = public/estrellas
+	url = https://github.com/joancruceira/nuvegame.git

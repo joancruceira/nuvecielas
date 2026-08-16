@@ -21,6 +21,11 @@ export interface Character {
   textColor: string;
   /** Resolved image URL — import the PNG from assets and pass it here */
   image: string;
+  /**
+   * No aparece en la grilla del Home (reservada a las cuatro protagonistas),
+   * pero sí en "Conocé al grupo" y en los juegos.
+   */
+  secret?: boolean;
 }
 
 export interface NewCharacter {

@@ -85,6 +85,15 @@ function forgetCurrent(): void {
   write(KEY, { ...store, current: null } satisfies ProfileStore);
 }
 
+/**
+ * Quién está jugando ahora, sin la ceremonia de llegada.
+ * Lo usan los juegos: necesitan saber de quién es el récord, pero no tienen que
+ * saludar ni contar visitas (de eso se ocupa el Home).
+ */
+export function useCurrentPlayer(): Player | null {
+  return playerById(read<ProfileStore>(KEY, EMPTY).current);
+}
+
 export interface ProfileState {
   /** Quién está jugando, o null si todavía no eligió */
   player: Player | null;

@@ -107,10 +107,43 @@
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.35);
 }
 
+/* ─── Sellos ────────────────────────────────────────────────────────────────── */
+.stampRow {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex: none;
+}
+.stampBtn {
+  width: 52px;
+  height: 52px;
+  border: 3px solid #fff;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 3px;
+  transition: transform 0.1s, border-color 0.15s;
+}
+.stampBtn:active { transform: scale(0.92); }
+.stampActive {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.35);
+}
+.stampImg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .tools {
   display: flex;
   gap: 8px;
   justify-content: center;
+  flex-wrap: wrap;
   flex: none;
 }
 .tool {
@@ -128,3 +161,122 @@
 }
 .tool:active { transform: scale(0.92); }
 .toolActive { background: linear-gradient(135deg, #7c3aed, #06b6d4); }
+
+/* ─── Aviso de guardado ─────────────────────────────────────────────────────── */
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 96px;
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #2a2350;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* ─── Galería ───────────────────────────────────────────────────────────────── */
+.gallery {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 14px calc(env(safe-area-inset-bottom, 0px) + 16px);
+  background: linear-gradient(160deg, #efe7ff, #e3f4ff);
+  overflow-y: auto;
+}
+
+.galleryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+}
+
+.galleryTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: #2a2350;
+}
+
+.galleryClose {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.galleryEmpty {
+  margin: auto;
+  text-align: center;
+  color: #5b5280;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.galleryItem {
+  position: relative;
+  margin: 0;
+  padding: 6px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.18);
+}
+
+.galleryImg {
+  width: 100%;
+  display: block;
+  border-radius: 9px;
+}
+
+.galleryDate {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #7a719e;
+  text-align: center;
+}
+
+.galleryDelete {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.galleryDownload {
+  flex: none;
+  margin-top: auto;
+  padding: 12px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7c3aed, #06b6d4);
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+}

@@ -11,15 +11,23 @@ const KEY = 'collection';
  * volver. Los deseos son el primer descubrimiento del mundo; el día que exista
  * el Libro de las Nuvecielas, esto es lo que va adentro.
  */
+/** Lo mejor que le salió en un juego. `best` es el récord, no un puntaje acumulado. */
+export interface GameStats {
+  wins: number;
+  best: number | null;
+}
+
 interface PlayerCollection {
   wishes: number;
   /** YYYY-MM-DD del último deseo, para poder contarlo después en el Libro */
   lastWish?: string;
+  games?: Record<string, GameStats>;
 }
 
 type CollectionStore = Record<string, PlayerCollection>;
 
 const EMPTY: PlayerCollection = { wishes: 0 };
+const NO_STATS: GameStats = { wins: 0, best: null };
 
 function collectionFor(playerId: string): PlayerCollection {
   return read<CollectionStore>(KEY, {})[playerId] ?? EMPTY;
@@ -48,4 +56,59 @@ export function useWishes(playerId: string | null) {
   }, [playerId]);
 
   return { wishes, addWish };
+}
+
+/**
+ * Récord de un juego para quien esté jugando.
+ *
+ * `better` dice qué es "mejor": en Memoria y el Puzzle gana el número más
+ * chico (movimientos); en el Quiz, el más grande (aciertos).
+ *
+ * Sin perfil elegido el juego funciona igual — simplemente no se guarda nada.
+ * Nunca hay que bloquear a nadie por no haber dicho quién es.
+ */
+export function useGameStats(
+  playerId: string | null,
+  gameId: string,
+  better: 'lower' | 'higher',
+) {
+  const [, bump] = useReducer((n: number) => n + 1, 0);
+
+  const stats = playerId
+    ? (collectionFor(playerId).games?.[gameId] ?? NO_STATS)
+    : NO_STATS;
+
+  /** Registra una victoria. Devuelve true si además fue récord nuevo. */
+  const recordWin = useCallback(
+    (value: number): boolean => {
+      if (!playerId) return false;
+
+      const store = read<CollectionStore>(KEY, {});
+      const player = store[playerId] ?? EMPTY;
+      const previous = player.games?.[gameId] ?? NO_STATS;
+      const isRecord =
+        previous.best === null ||
+        (better === 'lower' ? value < previous.best : value > previous.best);
+
+      write(KEY, {
+        ...store,
+        [playerId]: {
+          ...player,
+          games: {
+            ...player.games,
+            [gameId]: {
+              wins: previous.wins + 1,
+              best: isRecord ? value : previous.best,
+            },
+          },
+        },
+      } satisfies CollectionStore);
+
+      bump();
+      return isRecord;
+    },
+    [playerId, gameId, better],
+  );
+
+  return { stats, recordWin };
 }

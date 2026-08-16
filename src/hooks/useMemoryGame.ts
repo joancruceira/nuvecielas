@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { MemoryCardData } from '../types';
 import { playTap, playSuccess, playError, playWin } from '../utils/audio';
 
@@ -24,8 +24,21 @@ const FACES: Face[] = [
   { key: 'estrellaria', name: 'Estrellaria', src: estrellariaImg },
 ];
 
-function buildDeck(): MemoryCardData[] {
-  const deck: MemoryCardData[] = [...FACES, ...FACES].map((f, id) => ({
+/** Cuántos pares tiene cada nivel. El tope son las caras disponibles. */
+export const LEVELS = [
+  { id: 'facil', label: 'Fácil', pairs: 4 },
+  { id: 'normal', label: 'Normal', pairs: 6 },
+  { id: 'dificil', label: 'Difícil', pairs: FACES.length },
+] as const;
+
+export type LevelId = (typeof LEVELS)[number]['id'];
+
+function buildDeck(pairs: number): MemoryCardData[] {
+  // Se sortea QUÉ caras entran, no solo el orden: así "Fácil" no es siempre
+  // el mismo juego con las mismas cuatro amigas.
+  const chosen = [...FACES].sort(() => Math.random() - 0.5).slice(0, pairs);
+
+  const deck: MemoryCardData[] = [...chosen, ...chosen].map((f, id) => ({
     id,
     key: f.key,
     src: f.src,
@@ -42,9 +55,14 @@ function buildDeck(): MemoryCardData[] {
   return deck;
 }
 
-function getStarRating(moves: number): string {
-  if (moves <= 12) return '⭐⭐⭐';
-  if (moves <= 18) return '⭐⭐';
+/**
+ * Las estrellas se miden contra el mínimo posible (una jugada por par), no
+ * contra un número fijo: si no, "Fácil" siempre daría tres estrellas y
+ * "Difícil" casi nunca.
+ */
+function getStarRating(moves: number, pairs: number): string {
+  if (moves <= pairs * 1.5) return '⭐⭐⭐';
+  if (moves <= pairs * 2.5) return '⭐⭐';
   return '⭐';
 }
 
@@ -57,12 +75,21 @@ export interface UseMemoryGameReturn {
   reset: () => void;
 }
 
-export function useMemoryGame(): UseMemoryGameReturn {
-  const [cards, setCards] = useState<MemoryCardData[]>(buildDeck);
+export function useMemoryGame(
+  pairs: number,
+  onWin?: (moves: number) => void,
+): UseMemoryGameReturn {
+  const [cards, setCards] = useState<MemoryCardData[]>(() => buildDeck(pairs));
   const [selected, setSelected] = useState<number[]>([]);
   const [busy, setBusy] = useState(false);
   const [moves, setMoves] = useState(0);
   const [won, setWon] = useState(false);
+
+  // En un ref para que cambiar el handler no reconstruya `flip` en cada render.
+  const onWinRef = useRef(onWin);
+  useEffect(() => {
+    onWinRef.current = onWin;
+  }, [onWin]);
 
   const flip = useCallback(
     (index: number) => {
@@ -87,38 +114,46 @@ export function useMemoryGame(): UseMemoryGameReturn {
 
       const [a, b] = next;
       setTimeout(() => {
-        setCards(prev => {
-          const isMatch = prev[a].key === prev[b].key;
-          const updated = prev.map((c, i) =>
-            next.includes(i)
-              ? { ...c, matched: isMatch, flipped: isMatch }
-              : c,
-          );
-          if (isMatch) {
-            if (updated.every(c => c.matched)) {
-              playWin();
-              setWon(true);
-            } else {
-              playSuccess();
-            }
-          } else {
-            playError();
-          }
-          return updated;
-        });
+        /*
+         * El resultado se calcula ACÁ, no dentro del updater de `setCards`.
+         * Un updater tiene que ser puro: React lo invoca dos veces en StrictMode
+         * (y puede repetirlo al renderizar en concurrente), así que meter
+         * sonidos o `setWon` adentro los ejecutaba por duplicado.
+         *
+         * `cards` es del render en que se tocó la carta: `a` y `b` todavía
+         * figuran sin dar vuelta, pero su `key` —lo único que decide el par— ya
+         * es la definitiva.
+         */
+        const isMatch = cards[a].key === cards[b].key;
+        const resolved = cards.map((c, i) =>
+          next.includes(i) ? { ...c, matched: isMatch, flipped: isMatch } : c,
+        );
+        const finished = isMatch && resolved.every(c => c.matched);
+
+        setCards(resolved);
         setBusy(false);
+
+        if (!isMatch) {
+          playError();
+        } else if (finished) {
+          playWin();
+          setWon(true);
+          onWinRef.current?.(moves + 1);
+        } else {
+          playSuccess();
+        }
       }, 900);
     },
-    [cards, selected, busy],
+    [cards, selected, busy, moves],
   );
 
   const reset = useCallback(() => {
-    setCards(buildDeck());
+    setCards(buildDeck(pairs));
     setSelected([]);
     setBusy(false);
     setMoves(0);
     setWon(false);
-  }, []);
+  }, [pairs]);
 
-  return { cards, moves, won, stars: getStarRating(moves), flip, reset };
+  return { cards, moves, won, stars: getStarRating(moves, pairs), flip, reset };
 }

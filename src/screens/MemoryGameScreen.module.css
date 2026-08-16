@@ -1,33 +1,31 @@
-.screen {
-  position: relative;
-}
+/* Header y celebración viven ahora en GameShell y Celebration. */
 
-/* ─── Header ────────────────────────────────────────────────────────────────── */
-.header {
+/* ─── Selector de nivel ─────────────────────────────────────────────────────── */
+.levels {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  gap: 6px;
+  justify-content: center;
   margin-bottom: 10px;
 }
 
-.backBtn {
-  padding: 6px 14px;
+.level {
+  padding: 5px 14px;
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text);
-  cursor: pointer;
-  font-family: var(--font-body);
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
   font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-  transition: background 0.2s;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
-.backBtn:hover { background: var(--color-surface-hover); }
+.level:hover { background: var(--color-surface-hover); }
 
-.title {
-  font-size: 22px;
+.levelActive {
+  border-color: var(--color-lunaria);
+  color: var(--color-text);
+  background: rgba(236, 64, 122, 0.18);
 }
 
 /* ─── Stats bar ─────────────────────────────────────────────────────────────── */
@@ -39,6 +37,10 @@
   padding: 0 2px;
   font-size: 13px;
   color: var(--color-text-muted);
+}
+
+.best {
+  color: #ffe27a;
 }
 
 .resetBtn {
@@ -62,44 +64,7 @@
   gap: 8px;
 }
 
-/* ─── Win overlay ───────────────────────────────────────────────────────────── */
-.winOverlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0 0 0 / 0.85);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  z-index: 50;
-  border-radius: var(--radius-lg);
-  animation: nw-slide-up 0.3s ease;
-}
-
-.winTrophy {
-  font-size: 52px;
-  animation: nw-pulse 1s ease-in-out infinite;
-}
-
-.winTitle {
-  font-size: 30px;
-  color: #ffd700;
-}
-
+/* ─── Resultado (va dentro de Celebration) ──────────────────────────────────── */
 .winStars {
-  font-size: 34px;
-}
-
-.winMoves {
-  font-size: 14px;
-  opacity: 0.65;
-}
-
-.winBtn {
-  background: linear-gradient(135deg, #ffd700, #ff9800);
-  color: #000;
-  max-width: 200px;
-  font-size: 18px;
-  margin-top: 6px;
+  font-size: 32px;
 }

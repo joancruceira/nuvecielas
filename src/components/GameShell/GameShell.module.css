@@ -1,0 +1,37 @@
+/* Marco común de los mini-juegos: un solo header para todos. */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.backBtn {
+  flex-shrink: 0;
+  padding: 7px 13px;
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.backBtn:hover { background: var(--color-surface-hover); }
+.backBtn:active { transform: scale(0.96); }
+
+.title {
+  flex: 1;
+  font-size: 23px;
+  text-align: center;
+  /* Compensa el ancho del botón para que el título quede ópticamente centrado */
+  margin-right: 44px;
+}

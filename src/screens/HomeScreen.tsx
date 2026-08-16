@@ -144,9 +144,11 @@ export function HomeScreen({ onNavigate, onCharacterClick }: HomeScreenProps) {
           </div>
         )}
 
-        {/* Personajes vivos */}
+        {/* Personajes vivos. La grilla es de las cuatro protagonistas: las
+            `secret` viven al final del array, así que los índices coinciden
+            con los que espera CharactersScreen. */}
         <div className={styles.grid}>
-          {CHARACTERS.map((char, i) => (
+          {CHARACTERS.filter(c => !c.secret).map((char, i) => (
             <LivingCharacter
               key={char.id}
               character={char}
@@ -159,8 +161,6 @@ export function HomeScreen({ onNavigate, onCharacterClick }: HomeScreenProps) {
         {/* CTAs (navegación intacta) */}
         <a
           href={BOSQUE_MAGICO_URL}
-          target="_blank"
-          rel="noopener noreferrer"
           className={`nw-btn ${styles.btnPlay}`}
           onClick={() => playTap()}
         >

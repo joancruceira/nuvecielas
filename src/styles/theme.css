@@ -171,6 +171,12 @@ body::before {
 .nw-btn:hover  { transform: scale(1.02); box-shadow: 0 10px 28px rgba(0 0 0 / 0.5); }
 .nw-btn:active { transform: scale(0.97); }
 
+/* Botón principal de acción — el mismo degradé en todo el mundo */
+.nw-btn-primary {
+  background: linear-gradient(135deg, #ff6b9d, #ff9a3c);
+  color: #fff;
+}
+
 .nw-btn-secondary {
   display: block;
   width: 100%;

@@ -1,5 +1,9 @@
 import { useRef, useState, useEffect, useCallback, type PointerEvent as ReactPointerEvent } from 'react';
-import { playTap } from '../utils/audio';
+import { playTap, playSuccess } from '../utils/audio';
+import { STAMPS, type Stamp } from '../data/stamps';
+import { useCurrentPlayer } from '../world/profile';
+import { useGallery, saveDrawing } from '../world/gallery';
+import { DRAWING_SAVED, pick } from '../world/voice';
 import styles from './PaintScreen.module.css';
 import duomoImg from '../assets/coloring/duomo.jpg';
 
@@ -7,7 +11,7 @@ interface PaintScreenProps {
   onBack: () => void;
 }
 
-type Tool = 'bucket' | 'brush' | 'sparkle';
+type Tool = 'bucket' | 'brush' | 'sparkle' | 'stamp';
 interface Lamina { id: string; name: string; src: string; }
 
 const COLORS = [
@@ -24,6 +28,18 @@ const LAMINAS: Lamina[] = [
 const MAXW = 900;   // resolución de trabajo (flood fill rápido)
 const WALL = 110;   // luminancia < WALL => es línea (borde)
 
+/** Los sellos se cargan una sola vez para todo el módulo. */
+const stampCache = new Map<string, HTMLImageElement>();
+function stampImage(stamp: Stamp): HTMLImageElement {
+  let img = stampCache.get(stamp.id);
+  if (!img) {
+    img = new Image();
+    img.src = stamp.src;
+    stampCache.set(stamp.id, img);
+  }
+  return img;
+}
+
 export function PaintScreen({ onBack }: PaintScreenProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLCanvasElement>(null);
@@ -38,7 +54,19 @@ export function PaintScreen({ onBack }: PaintScreenProps) {
   const [lamina, setLamina] = useState<Lamina>(LAMINAS[0]);
   const [color, setColor] = useState(COLORS[0]);
   const [tool, setTool] = useState<Tool>('bucket');
+  const [stamp, setStamp] = useState<Stamp>(STAMPS[0]);
   const [ratio, setRatio] = useState(MAXW / Math.round(MAXW * 1.5));
+
+  const player = useCurrentPlayer();
+  const { drawings, refresh, remove } = useGallery(player?.id ?? null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 2400);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   const fctx = () => fillRef.current!.getContext('2d', { willReadFrequently: true })!;
   const xctx = () => fxRef.current!.getContext('2d')!;
@@ -155,6 +183,16 @@ export function PaintScreen({ onBack }: PaintScreenProps) {
     ctx.restore();
   }
 
+  /** Estampa un sello centrado donde se tocó. Va en la capa FX: sobre las líneas. */
+  function stampAt(x: number, y: number) {
+    const img = stampImage(stamp);
+    if (!img.complete || !img.naturalWidth) return; // todavía cargando
+    const { W } = sizeRef.current;
+    const w = W * 0.2;
+    const h = w * (img.naturalHeight / img.naturalWidth);
+    xctx().drawImage(img, x - w / 2, y - h / 2, w, h);
+  }
+
   function toCanvas(e: ReactPointerEvent) {
     const r = stageRef.current!.getBoundingClientRect();
     const { W, H } = sizeRef.current;
@@ -171,6 +209,7 @@ export function PaintScreen({ onBack }: PaintScreenProps) {
     pushUndo();
     if (tool === 'bucket') floodFill(x, y);
     else if (tool === 'brush') { paintingRef.current = true; brushAt(x, y); }
+    else if (tool === 'stamp') stampAt(x, y);
     else sparkleAt(x, y);
   }
   function onMove(e: ReactPointerEvent) {
@@ -180,7 +219,8 @@ export function PaintScreen({ onBack }: PaintScreenProps) {
   }
   function onUp() { paintingRef.current = false; }
 
-  function save() {
+  /** Aplana las tres capas en un solo PNG. */
+  function flatten(): Promise<Blob | null> {
     const { W, H } = sizeRef.current;
     const out = document.createElement('canvas');
     out.width = W; out.height = H;
@@ -191,14 +231,30 @@ export function PaintScreen({ onBack }: PaintScreenProps) {
     o.drawImage(lineRef.current!, 0, 0, W, H);
     o.globalCompositeOperation = 'source-over';
     o.drawImage(fxRef.current!, 0, 0);
-    out.toBlob(b => {
-      if (!b) return;
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(b);
-      a.download = 'mi-dibujo-nuvecielas.png';
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-    }, 'image/png');
+    return new Promise(resolve => out.toBlob(resolve, 'image/png'));
+  }
+
+  /** Guardar = queda en Manolandia, no en la carpeta Descargas. */
+  async function save() {
+    playTap();
+    const blob = await flatten();
+    if (!blob) return;
+    await saveDrawing(blob, player?.id ?? null, lamina.id);
+    refresh();
+    playSuccess();
+    setToast(pick(DRAWING_SAVED));
+  }
+
+  /** Descargar sigue existiendo, para imprimirlo o mandárselo a alguien. */
+  async function download() {
+    playTap();
+    const blob = await flatten();
+    if (!blob) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'mi-dibujo-nuvecielas.png';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   }
 
   return (
@@ -236,26 +292,89 @@ export function PaintScreen({ onBack }: PaintScreenProps) {
         <canvas ref={fxRef} className={styles.layer} />
       </div>
 
-      <div className={styles.palette}>
-        {COLORS.map(c => (
-          <button
-            key={c}
-            className={`${styles.swatch} ${c === color ? styles.swatchActive : ''}`}
-            style={{ background: c }}
-            onClick={() => { playTap(); setColor(c); }}
-            aria-label={`Color ${c}`}
-          />
-        ))}
-      </div>
+      {/* Con el sello elegido, la fila de colores no aplica: mostramos los sellos */}
+      {tool === 'stamp' ? (
+        <div className={styles.stampRow}>
+          {STAMPS.map(s => (
+            <button
+              key={s.id}
+              className={`${styles.stampBtn} ${s.id === stamp.id ? styles.stampActive : ''}`}
+              onClick={() => { playTap(); setStamp(s); }}
+              aria-label={`Sello de ${s.name}`}
+            >
+              <img src={s.src} alt="" className={styles.stampImg} />
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className={styles.palette}>
+          {COLORS.map(c => (
+            <button
+              key={c}
+              className={`${styles.swatch} ${c === color ? styles.swatchActive : ''}`}
+              style={{ background: c }}
+              onClick={() => { playTap(); setColor(c); }}
+              aria-label={`Color ${c}`}
+            />
+          ))}
+        </div>
+      )}
 
       <div className={styles.tools}>
         <button className={`${styles.tool} ${tool === 'bucket' ? styles.toolActive : ''}`} onClick={() => { playTap(); setTool('bucket'); }} title="Balde">🪣</button>
         <button className={`${styles.tool} ${tool === 'brush' ? styles.toolActive : ''}`} onClick={() => { playTap(); setTool('brush'); }} title="Pincel">🖌️</button>
         <button className={`${styles.tool} ${tool === 'sparkle' ? styles.toolActive : ''}`} onClick={() => { playTap(); setTool('sparkle'); }} title="Brillos">✨</button>
+        <button className={`${styles.tool} ${tool === 'stamp' ? styles.toolActive : ''}`} onClick={() => { playTap(); setTool('stamp'); }} title="Sellos">🧸</button>
         <button className={styles.tool} onClick={() => { playTap(); undo(); }} title="Deshacer">↩️</button>
         <button className={styles.tool} onClick={() => { playTap(); clearAll(); }} title="Limpiar">🔄</button>
-        <button className={styles.tool} onClick={() => { playTap(); save(); }} title="Guardar">💾</button>
+        <button className={styles.tool} onClick={save} title="Guardar en mi galería">💾</button>
+        <button className={styles.tool} onClick={() => { playTap(); setGalleryOpen(true); }} title="Mi galería">🖼️</button>
       </div>
+
+      {toast && <div className={styles.toast} role="status" aria-live="polite">{toast}</div>}
+
+      {/* ─── Galería ────────────────────────────────────────────────────────── */}
+      {galleryOpen && (
+        <div className={styles.gallery} role="dialog" aria-label="Mi galería">
+          <div className={styles.galleryHeader}>
+            <h2 className={styles.galleryTitle}>🖼️ Mis dibujos</h2>
+            <button
+              className={styles.galleryClose}
+              onClick={() => { playTap(); setGalleryOpen(false); }}
+              aria-label="Cerrar galería"
+            >
+              ✕
+            </button>
+          </div>
+
+          {drawings.length === 0 ? (
+            <p className={styles.galleryEmpty}>
+              Todavía no guardaste ninguno.<br />
+              Pintá algo y tocá 💾
+            </p>
+          ) : (
+            <div className={styles.galleryGrid}>
+              {drawings.map(d => (
+                <figure key={d.id} className={styles.galleryItem}>
+                  <img src={d.url} alt={`Dibujo del ${d.createdAt}`} className={styles.galleryImg} />
+                  <figcaption className={styles.galleryDate}>{d.createdAt}</figcaption>
+                  <button
+                    className={styles.galleryDelete}
+                    onClick={() => { playTap(); remove(d.id); }}
+                    aria-label="Borrar este dibujo"
+                  >
+                    🗑️
+                  </button>
+                </figure>
+              ))}
+            </div>
+          )}
+
+          <button className={styles.galleryDownload} onClick={download}>
+            ⬇️ Descargar el dibujo de ahora
+          </button>
+        </div>
+      )}
     </main>
   );
 }

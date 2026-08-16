@@ -1,5 +1,12 @@
-import { useMemoryGame } from '../hooks/useMemoryGame';
+import { useCallback, useEffect, useState } from 'react';
+import { useMemoryGame, LEVELS, type LevelId } from '../hooks/useMemoryGame';
 import { MemoryCard } from '../components/MemoryCard';
+import { GameShell } from '../components/GameShell';
+import { Celebration } from '../components/Celebration';
+import { useCurrentPlayer } from '../world/profile';
+import { useGameStats } from '../world/collection';
+import { HOST_BY_GAME } from '../world/voice';
+import { playTap } from '../utils/audio';
 import styles from './MemoryGameScreen.module.css';
 
 interface MemoryGameScreenProps {
@@ -7,22 +14,61 @@ interface MemoryGameScreenProps {
 }
 
 export function MemoryGameScreen({ onBack }: MemoryGameScreenProps) {
-  const { cards, moves, won, stars, flip, reset } = useMemoryGame();
+  const player = useCurrentPlayer();
+  const [level, setLevel] = useState<LevelId>('normal');
+  const pairs = LEVELS.find(l => l.id === level)!.pairs;
+
+  // El récord es por nivel: 4 pares y 8 pares no compiten entre sí.
+  const { stats, recordWin } = useGameStats(player?.id ?? null, `memory-${level}`, 'lower');
+  const [isRecord, setIsRecord] = useState(false);
+
+  const handleWin = useCallback(
+    (finalMoves: number) => setIsRecord(recordWin(finalMoves)),
+    [recordWin],
+  );
+
+  const { cards, moves, won, stars, flip, reset } = useMemoryGame(pairs, handleWin);
+
+  // Cambiar de nivel reparte de nuevo.
+  useEffect(() => {
+    reset();
+  }, [level, reset]);
+
+  function playAgain() {
+    setIsRecord(false);
+    reset();
+  }
+
+  function changeLevel(next: LevelId) {
+    playTap();
+    setIsRecord(false);
+    setLevel(next);
+  }
 
   return (
-    <main className={`nw-screen ${styles.screen}`}>
-      {/* ─── Header ───────────────────────────────────────────────────────── */}
-      <div className={styles.header}>
-        <button className={styles.backBtn} onClick={onBack} aria-label="Volver a juegos">
-          ← Volver
-        </button>
-        <h1 className={`nw-title ${styles.title}`}>🃏 Memoria Mágica</h1>
+    <GameShell title="🃏 Memoria Mágica" onBack={onBack}>
+      {/* ─── Nivel ────────────────────────────────────────────────────────── */}
+      <div className={styles.levels} role="group" aria-label="Dificultad">
+        {LEVELS.map(l => (
+          <button
+            key={l.id}
+            className={`${styles.level} ${l.id === level ? styles.levelActive : ''}`}
+            onClick={() => changeLevel(l.id)}
+          >
+            {l.label}
+          </button>
+        ))}
       </div>
 
       {/* ─── Stats bar ────────────────────────────────────────────────────── */}
       <div className={styles.statsBar}>
-        <span>Movimientos: <strong>{moves}</strong></span>
-        <button className={styles.resetBtn} onClick={reset} aria-label="Reiniciar partida">
+        <span>
+          Movimientos: <strong>{moves}</strong>
+          {stats.best !== null && (
+            <span className={styles.best}> · récord {stats.best}</span>
+          )}
+        </span>
+        <button className={styles.resetBtn} onClick={playAgain} aria-label="Reiniciar partida">
           ↺ Reiniciar
         </button>
       </div>
@@ -34,21 +80,28 @@ export function MemoryGameScreen({ onBack }: MemoryGameScreenProps) {
         ))}
       </div>
 
-      {/* ─── Win overlay ──────────────────────────────────────────────────── */}
+      {/* ─── Victoria ─────────────────────────────────────────────────────── */}
       {won && (
-        <div className={styles.winOverlay} role="status" aria-live="polite">
-          <div className={styles.winTrophy}>🏆</div>
-          <h2 className={`nw-title ${styles.winTitle}`}>¡Ganaste!</h2>
-          <p className={styles.winStars}>{stars}</p>
-          <p className={styles.winMoves}>en {moves} movimientos</p>
-          <button
-            className={`nw-btn ${styles.winBtn}`}
-            onClick={reset}
-          >
-            Jugar de nuevo
+        <Celebration
+          characterId={HOST_BY_GAME.memory}
+          playerName={player?.name ?? null}
+          title="¡Ganaste!"
+          isRecord={isRecord}
+          stats={
+            <>
+              <span className={styles.winStars}>{stars}</span>
+              <span>en {moves} movimientos</span>
+            </>
+          }
+        >
+          <button className="nw-btn nw-btn-primary" onClick={playAgain}>
+            Jugar de nuevo 🔁
           </button>
-        </div>
+          <button className="nw-btn-secondary" onClick={onBack}>
+            Volver a juegos
+          </button>
+        </Celebration>
       )}
-    </main>
+    </GameShell>
   );
 }

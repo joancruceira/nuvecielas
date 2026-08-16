@@ -10,6 +10,7 @@
 import type { Character, NewCharacter } from '../types';
 
 import cielaImg from '../assets/images/ciela.png';
+import estrellariaImg from '../assets/images/Estrellaria.png';
 import lunariaImg from '../assets/images/lunaria.png';
 import nuveImg from '../assets/images/nuve.png';
 import nuvecielaImg from '../assets/images/nuveciela.png';
@@ -77,6 +78,34 @@ export const CHARACTERS: Character[] = [
     cardGradient: 'linear-gradient(145deg, #003040, #004060 55%, #26C6DA)',
     textColor: '#80EEFF',
     image: cielaImg,
+  },
+  /*
+   * ⚠️ BORRADOR — a revisar con Nina y Jazmín.
+   *
+   * Estrellaria ya existía en el código (jugaba en Memoria Mágica) pero no
+   * tenía ficha: ni nombre propio en el roster, ni poder, ni historia. Esto es
+   * una primera versión para que deje de ser una imagen suelta; la
+   * personalidad de verdad la deciden sus creadoras, no nosotros.
+   *
+   * Va ÚLTIMA a propósito: `secret` la saca de la grilla del Home (que son las
+   * cuatro protagonistas), y al estar al final los índices de las otras no se
+   * mueven.
+   */
+  {
+    id: 'estrellaria',
+    name: 'Estrellaria',
+    emoji: '🌟',
+    tagline: '¡La que encuentra lo que nadie ve!',
+    description:
+      'Se pasa las noches mirando el cielo. Dice que cada estrella fugaz deja algo atrás, y ella sabe dónde cae.',
+    power: 'Encuentra estrellas escondidas ✨',
+    traits: ['Observadora', 'Paciente', 'Soñadora'],
+    favorite: 'Las cosas que aparecen una sola vez',
+    primaryColor: '#F7A8C4',
+    cardGradient: 'linear-gradient(145deg, #2a0b28, #5c2050 55%, #F7A8C4)',
+    textColor: '#FFD9E8',
+    image: estrellariaImg,
+    secret: true,
   },
 ];
 

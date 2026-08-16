@@ -55,12 +55,63 @@ const RETURNING_LONG: readonly string[] = [
 /** Cuando todavía no sabemos quién está del otro lado. */
 export const WHO_ARE_YOU = '¡Hola! ¿Quién sos hoy?';
 
+/** Lo que dice Lunaria cuando guarda un dibujo en el mundo. */
+export const DRAWING_SAVED: readonly string[] = [
+  'Lo guardé en Manolandia 💜',
+  '¡Qué lindo te quedó! Ya está guardado.',
+  'Lo cuelgo en tu galería.',
+];
+
 /** Lo que dice Lunaria cuando se atrapa una estrella fugaz. */
 export const WISH_CAUGHT: readonly string[] = [
   '¡La atrapaste! Pedí un deseo.',
   '¡Guau! Esa estrella es tuya.',
   'Nadie la había visto pasar.',
 ];
+
+/**
+ * Quién recibe a la nena en cada juego. No es decorativo: es lo que convierte
+ * "abrí un mini-juego" en "fui a ver a una amiga".
+ */
+export const HOST_BY_GAME: Record<string, string> = {
+  memory: 'nuve',
+  quiz: 'lunaria',
+  puzzle: 'nuveciela',
+  colors: 'lunaria',
+};
+
+/** Lo que dice cada una al ganar, con su propio tono. */
+const WIN_LINES: Record<string, readonly string[]> = {
+  nuve: [
+    '¡Te acordabas de todas, {n}!',
+    'Yo siempre me olvido dónde dejo las cosas…',
+    '¡Qué memoria, {n}!',
+  ],
+  lunaria: [
+    '¡Sabía que podías, {n}!',
+    'Me encanta cuando te sale.',
+    '¡Eso, {n}!',
+  ],
+  nuveciela: [
+    '¡Me armaste enterita, {n}!',
+    'Nada mal. Nada mal.',
+    '¡Lo lograste, {n}!',
+  ],
+  ciela: [
+    '¡Rapidísima, {n}!',
+    '¡Vamos, {n}!',
+    'Ni yo lo hubiera hecho mejor.',
+  ],
+};
+
+/** Cuando además rompe su récord anterior. */
+const RECORD_LINES: readonly string[] = [
+  '¡Es tu mejor marca, {n}!',
+  '¡Nunca te había salido tan bien!',
+  '¡Récord nuevo!',
+];
+
+const GENERIC_WIN: readonly string[] = ['¡Muy bien, {n}!', '¡Lo hiciste!'];
 
 function fill(template: string, name: string, days: number): string {
   return template.replace(/\{n\}/g, name).replace(/\{d\}/g, String(days));
@@ -91,4 +142,21 @@ export function hostessPhrases(arrival: Arrival | null, tod: TimeOfDay): string[
 
   const flavour = BY_TIME_OF_DAY[tod].map(p => fill(p, name, daysAway));
   return [fill(greeting, name, daysAway), ...flavour];
+}
+
+/**
+ * Lo que dice la anfitriona del juego al ganar. Si además fue récord, lo
+ * celebra. Sin nombre (nadie eligió perfil) las frases igual funcionan: por eso
+ * varias no lo llevan.
+ */
+export function winLine(
+  characterId: string,
+  playerName: string | null,
+  isRecord = false,
+): string {
+  const pool = isRecord ? RECORD_LINES : (WIN_LINES[characterId] ?? GENERIC_WIN);
+  // Sin perfil elegido descartamos las frases que llevan nombre.
+  const usable = playerName ? pool : pool.filter(p => !p.includes('{n}'));
+  if (!usable.length) return '¡Lo hiciste!';
+  return fill(pick(usable), playerName ?? '', 0);
 }
