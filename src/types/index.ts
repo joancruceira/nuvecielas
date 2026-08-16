@@ -48,8 +48,11 @@ export interface Player {
   emoji: string;
   /** Color de acento para el selector y el chip de perfil */
   color: string;
-  /** Recorte chico de la cara — NO el sprite de cuerpo entero (pesa MB) */
-  avatar: string;
+  /**
+   * Recorte chico de la cara — NO el sprite de cuerpo entero (pesa MB).
+   * Las visitas escriben su nombre y no tienen dibujo: ahí se usa el emoji.
+   */
+  avatar?: string;
 }
 
 // ─── Games ────────────────────────────────────────────────────────────────────

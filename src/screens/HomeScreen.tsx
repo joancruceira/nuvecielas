@@ -34,11 +34,14 @@ export function HomeScreen({ onNavigate, onCharacterClick }: HomeScreenProps) {
   // heredan por CSS tanto el cielo como los personajes.
   const worldRef = useParallax<HTMLElement>(!reduced);
 
-  const { player, arrival, choose, clear, players } = useProfile();
+  const { player, arrival, choose, chooseByName, clear, players, guests } = useProfile();
   const { wishes, addWish } = useWishes(player?.id ?? null);
 
   /** "Después": no insistir con el selector durante esta sesión. */
   const [askLater, setAskLater] = useState(false);
+  /** Escribir el nombre, para quien no sea Nina, Jazmín ni Natan. */
+  const [typing, setTyping] = useState(false);
+  const [typedName, setTypedName] = useState('');
   const [toast, setToast] = useState<Toast | null>(null);
 
   const phrases = useMemo(() => hostessPhrases(arrival, tod), [arrival, tod]);
@@ -80,7 +83,11 @@ export function HomeScreen({ onNavigate, onCharacterClick }: HomeScreenProps) {
               }}
               aria-label={`Estás jugando como ${player.name}. Tocá para cambiar.`}
             >
-              <img src={player.avatar} alt="" className={styles.chipImg} />
+              {player.avatar ? (
+                <img src={player.avatar} alt="" className={styles.chipImg} />
+              ) : (
+                <span className={styles.chipImg} aria-hidden="true">{player.emoji}</span>
+              )}
               <span>{player.name}</span>
             </button>
           ) : (
@@ -112,35 +119,94 @@ export function HomeScreen({ onNavigate, onCharacterClick }: HomeScreenProps) {
             contenido: el botón de jugar tiene que seguir estando a la vista. */}
         {showPicker && (
           <div className={styles.picker}>
+            {/* Escribiendo el nombre, la ✕ vuelve a la lista en vez de cerrar */}
             <button
               className={styles.pickerSkip}
               onClick={() => {
                 playTap();
-                setAskLater(true);
+                if (typing) {
+                  setTyping(false);
+                  setTypedName('');
+                } else {
+                  setAskLater(true);
+                }
               }}
-              aria-label="Elegir después"
+              aria-label={typing ? 'Volver a la lista' : 'Elegir después'}
             >
               ✕
             </button>
             <p className={styles.pickerTitle}>¿Quién sos hoy?</p>
-            <div className={styles.pickerRow}>
-              {players.map(p => (
+
+            {typing ? (
+              <form
+                className={styles.nameForm}
+                onSubmit={e => {
+                  e.preventDefault();
+                  playTap();
+                  // Si el nombre no sirve, se deja el teclado como está en vez
+                  // de cerrar el formulario y perder lo escrito.
+                  if (chooseByName(typedName)) {
+                    setTyping(false);
+                    setTypedName('');
+                  }
+                }}
+              >
+                <input
+                  className={styles.nameInput}
+                  value={typedName}
+                  onChange={e => setTypedName(e.target.value)}
+                  placeholder="Tu nombre"
+                  maxLength={14}
+                  autoFocus
+                  aria-label="Escribí tu nombre"
+                />
                 <button
-                  key={p.id}
-                  className={styles.pickerBtn}
-                  style={{ '--accent': p.color } as CSSProperties}
+                  type="submit"
+                  className={styles.nameGo}
+                  disabled={!typedName.trim()}
+                >
+                  ¡Listo!
+                </button>
+              </form>
+            ) : (
+              <div className={styles.pickerRow}>
+                {[...players, ...guests].map(p => (
+                  <button
+                    key={p.id}
+                    className={styles.pickerBtn}
+                    style={{ '--accent': p.color } as CSSProperties}
+                    onClick={() => {
+                      playTap();
+                      choose(p.id);
+                    }}
+                  >
+                    {p.avatar ? (
+                      <img src={p.avatar} alt="" className={styles.pickerImg} />
+                    ) : (
+                      <span className={styles.pickerImg} aria-hidden="true">
+                        {p.emoji}
+                      </span>
+                    )}
+                    <span className={styles.pickerName}>
+                      {p.avatar ? `${p.emoji} ` : ''}
+                      {p.name}
+                    </span>
+                  </button>
+                ))}
+
+                {/* Para cualquier otro chico que entre a jugar */}
+                <button
+                  className={`${styles.pickerBtn} ${styles.pickerOther}`}
                   onClick={() => {
                     playTap();
-                    choose(p.id);
+                    setTyping(true);
                   }}
                 >
-                  <img src={p.avatar} alt="" className={styles.pickerImg} />
-                  <span className={styles.pickerName}>
-                    {p.emoji} {p.name}
-                  </span>
+                  <span className={styles.pickerImg} aria-hidden="true">✏️</span>
+                  <span className={styles.pickerName}>Otro nombre</span>
                 </button>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         )}
 
