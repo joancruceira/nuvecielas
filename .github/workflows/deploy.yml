@@ -24,11 +24,19 @@ jobs:
         working-directory: .
     steps:
       - uses: actions/checkout@v4
+        with:
+          # El Bosque Mágico y Atrapa las Estrellas entran como submódulos en
+          # public/. Sin esto, el build publica dos carpetas vacías.
+          submodules: recursive
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm install
       - run: npm run build
+      # Vite copia public/ tal cual, incluido el puntero .git de cada submódulo
+      # y el CNAME propio de cada repo (que pisaría el dominio si quedara suelto).
+      - name: Limpiar restos de los submódulos
+        run: rm -f dist/bosque/.git dist/bosque/CNAME dist/estrellas/.git dist/estrellas/CNAME
       - uses: actions/upload-pages-artifact@v3
         with:
           # Si la app está en subcarpeta: nuvecielas/dist

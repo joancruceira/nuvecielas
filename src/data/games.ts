@@ -1,8 +1,21 @@
 import type { GameEntry } from '../types';
 
+/*
+ * Los tres juegos viven ahora en el MISMO origen, como rutas del hub:
+ * el platformer y "Atrapa las Estrellas" entran como submódulos de git en
+ * `public/`, y Vite los copia tal cual al build.
+ *
+ * No es un detalle de deploy: localStorage está aislado por origen, así que
+ * mientras vivían en subdominios distintos el hub no podía enterarse de nada
+ * de lo que pasaba adentro de ellos. Con un solo origen, la colección y el
+ * perfil pueden ser de verdad compartidos.
+ *
+ * Las rutas llevan `index.html` explícito a propósito: GitHub Pages resuelve
+ * `/estrellas/` solo, pero el dev server de Vite no —cae en el fallback del SPA
+ * y sirve el hub—, así el mismo link funciona en los dos lados.
+ */
 export const EMBEDDED_GAMES = {
-
-  stars: { title: 'Atrapa las Estrellas', url: 'https://stars.nuvecielas.com.ar' },
+  stars: { title: 'Atrapa las Estrellas', url: '/estrellas/index.html' },
 } as const;
 
 export const GAMES: GameEntry[] = [
@@ -48,5 +61,5 @@ export const GAMES: GameEntry[] = [
   },
 ];
 
-/** URL of the main platformer game */
-export const BOSQUE_MAGICO_URL = 'https://nuvebosque.nuvecielas.com.ar';
+/** Ruta del platformer (mismo origen — ver EMBEDDED_GAMES) */
+export const BOSQUE_MAGICO_URL = '/bosque/index.html';
