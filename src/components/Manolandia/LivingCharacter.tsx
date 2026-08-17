@@ -98,7 +98,14 @@ export function LivingCharacter({
         phraseIdx.current += 1;
         hideTimer = window.setTimeout(() => {
           setPhrase(null);
-          cycle(rand(12, 20) * 1000); // siguiente saludo más tarde
+          /*
+           * La segunda frase llega enseguida y el resto se espacian.
+           * La segunda es "lo que hiciste la última vez" —lo que demuestra que
+           * el mundo estuvo mirando—: con el intervalo largo aparecía recién a
+           * los 15 segundos, cuando la nena ya tocó Jugar y no la ve nunca.
+           */
+          const next = phraseIdx.current === 1 ? 1400 : rand(12, 20) * 1000;
+          cycle(next);
         }, 3500);
       }, firstDelay);
     };

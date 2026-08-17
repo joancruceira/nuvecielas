@@ -311,6 +311,49 @@
     return isRecord;
   }
 
+  // ── El diario: lo que pasó, para que el mundo pueda enterarse ─────────────
+  //
+  // Cada juego anota lo que hace. El hub lo lee y reacciona: Lunaria comenta lo
+  // último, la pantalla de Juegos muestra por dónde vas.
+  //
+  // Se guarda un tope de entradas por jugador: es un diario, no un historial
+  // forense, y el localStorage es finito.
+
+  var K_DIARY = 'diary';
+  var DIARY_MAX = 30;
+
+  /**
+   * Anota algo que pasó. `data` es libre por juego (puntaje, nivel, estrellas).
+   * Sin jugador elegido no se anota nada: no sabríamos de quién es.
+   */
+  function note(game, type, data) {
+    var id = currentPlayerId();
+    if (!id) return false;
+
+    var all = read(K_DIARY, {});
+    var entries = (all[id] || []).slice();
+
+    entries.unshift(
+      Object.assign({ game: game, type: type, at: Date.now(), day: todayISO() }, data || {}),
+    );
+
+    all[id] = entries.slice(0, DIARY_MAX);
+    return write(K_DIARY, all);
+  }
+
+  /** Las últimas entradas, de la más nueva a la más vieja. */
+  function diary(playerId, limit) {
+    var id = playerId || currentPlayerId();
+    if (!id) return [];
+    var entries = read(K_DIARY, {})[id] || [];
+    return limit ? entries.slice(0, limit) : entries;
+  }
+
+  /** Lo último que hizo. Es lo que le permite al mundo decir "vi lo que hiciste". */
+  function lastNote(playerId) {
+    return diary(playerId, 1)[0] || null;
+  }
+
   // ── Lo que ya existía antes de todo esto ──────────────────────────────────
   //
   // `nuve_best`, `nuvecielas_unlocked` y `nuvecielas_stars_N` son de "quien
@@ -365,6 +408,10 @@
     recordBest: recordBest,
     wishes: wishes,
     addWish: addWish,
+
+    note: note,
+    diary: diary,
+    lastNote: lastNote,
 
     legacy: legacy,
 

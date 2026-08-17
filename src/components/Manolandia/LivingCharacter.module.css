@@ -102,7 +102,12 @@
   line-height: 1.1;
   padding: 7px 12px;
   border-radius: 14px;
-  white-space: nowrap;
+  /* Las frases del diario ("¡Pasaste El Castillo de la Ciela!") son largas:
+     con nowrap se salían de la pantalla. */
+  white-space: normal;
+  text-align: center;
+  width: max-content;
+  max-width: min(230px, 82vw);
   box-shadow: 0 6px 18px rgba(0 0 0 / 0.35);
   opacity: 0;
   pointer-events: none;

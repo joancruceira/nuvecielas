@@ -1,5 +1,6 @@
 import type { TimeOfDay } from '../components/Manolandia/useTimeOfDay';
 import type { Arrival } from './profile';
+import { world, type DiaryEntry } from './bridge';
 
 /**
  * La voz del mundo. SOLO datos: qué dice cada personaje y cuándo.
@@ -113,6 +114,39 @@ const RECORD_LINES: readonly string[] = [
 
 const GENERIC_WIN: readonly string[] = ['¡Muy bien, {n}!', '¡Lo hiciste!'];
 
+const todayISO = () => world().todayISO();
+
+/**
+ * Lo que dice el mundo sobre lo último que hiciste — en cualquiera de los tres
+ * juegos. Es lo que convierte "abriste una app" en "alguien te estuvo mirando".
+ *
+ * Devuelve null si no hay nada que contar: mejor callarse que inventar.
+ */
+export function noteLine(entry: DiaryEntry | null): string | null {
+  if (!entry) return null;
+
+  const when = entry.day === todayISO() ? 'Hoy' : 'La última vez';
+
+  if (entry.game === 'bosque' && entry.type === 'nivel') {
+    return entry.label ? `¡Pasaste ${entry.label}!` : '¡Pasaste un nivel del Bosque!';
+  }
+
+  if (entry.game === 'estrellas' && entry.type === 'partida') {
+    if (entry.record) return `¡Rompiste tu récord: ${entry.value} estrellas!`;
+    return `${when} juntaste ${entry.value} estrellas.`;
+  }
+
+  if (entry.type === 'victoria') {
+    if (entry.record && entry.label) return `¡Tu mejor marca en ${entry.label}!`;
+    return entry.label ? `${when} ganaste en ${entry.label}.` : null;
+  }
+
+  if (entry.type === 'deseo') return `${when} atrapaste una estrella fugaz.`;
+  if (entry.type === 'dibujo') return 'Me encantó tu último dibujo.';
+
+  return null;
+}
+
 function fill(template: string, name: string, days: number): string {
   return template.replace(/\{n\}/g, name).replace(/\{d\}/g, String(days));
 }
@@ -140,8 +174,17 @@ export function hostessPhrases(arrival: Arrival | null, tod: TimeOfDay): string[
   else if (daysAway >= 1) greeting = pick(RETURNING_SOON);
   else greeting = `¡Hola de nuevo, ${name}!`;
 
+  // Lo que hizo va SEGUNDO, apenas después del saludo: es lo que demuestra que
+  // el mundo estuvo mirando, y si queda perdido entre las frases de ambiente se
+  // lo pierde. Puede venir de cualquiera de los tres juegos.
+  const lastThing = noteLine(world().lastNote(player.id));
+
   const flavour = BY_TIME_OF_DAY[tod].map(p => fill(p, name, daysAway));
-  return [fill(greeting, name, daysAway), ...flavour];
+  return [
+    fill(greeting, name, daysAway),
+    ...(lastThing ? [lastThing] : []),
+    ...flavour,
+  ];
 }
 
 /**

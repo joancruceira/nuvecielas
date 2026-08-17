@@ -28,7 +28,7 @@ export function PuzzleScreen({ onBack }: PuzzleScreenProps) {
   const [size, setSize] = useState(3);
 
   // Récord por tamaño: armar 16 piezas no compite con armar 9.
-  const { stats, recordWin } = useGameStats(player?.id ?? null, `puzzle-${size}`, 'lower');
+  const { stats, recordWin } = useGameStats(player?.id ?? null, `puzzle-${size}`, 'lower', 'Reto Nuveciela');
 
   const [selectedChar, setSelectedChar] = useState<typeof CHARACTERS[0] | null>(null);
   const [pieces, setPieces] = useState<PuzzlePiece[]>([]);

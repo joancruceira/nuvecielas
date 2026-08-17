@@ -19,7 +19,7 @@ export function MemoryGameScreen({ onBack }: MemoryGameScreenProps) {
   const pairs = LEVELS.find(l => l.id === level)!.pairs;
 
   // El récord es por nivel: 4 pares y 8 pares no compiten entre sí.
-  const { stats, recordWin } = useGameStats(player?.id ?? null, `memory-${level}`, 'lower');
+  const { stats, recordWin } = useGameStats(player?.id ?? null, `memory-${level}`, 'lower', 'Memoria Mágica');
   const [isRecord, setIsRecord] = useState(false);
 
   const handleWin = useCallback(

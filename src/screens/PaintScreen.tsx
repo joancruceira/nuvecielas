@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback, type PointerEvent as ReactPoi
 import { playTap, playSuccess } from '../utils/audio';
 import { STAMPS, type Stamp } from '../data/stamps';
 import { useCurrentPlayer } from '../world/profile';
+import { world } from '../world/bridge';
 import { useGallery, saveDrawing } from '../world/gallery';
 import { DRAWING_SAVED, pick } from '../world/voice';
 import styles from './PaintScreen.module.css';
@@ -240,6 +241,16 @@ export function PaintScreen({ onBack }: PaintScreenProps) {
     const blob = await flatten();
     if (!blob) return;
     await saveDrawing(blob, player?.id ?? null, lamina.id);
+
+    // El contador vive en el mundo compartido (los dibujos en sí van a
+    // IndexedDB): así la pantalla de Juegos puede decir cuántos hay sin
+    // tener que abrir la base de imágenes.
+    if (player) {
+      const saved = Number(world().gameState('pintar', player.id).saved ?? 0);
+      world().patchGameState('pintar', { saved: saved + 1 }, player.id);
+      world().note('pintar', 'dibujo', { label: 'Pintá con Lunaria' });
+    }
+
     refresh();
     playSuccess();
     setToast(pick(DRAWING_SAVED));

@@ -38,3 +38,12 @@
   font-size: 11px;
   opacity: 0.7;
 }
+
+/* Por dónde va: reemplaza al "✓ Disponible" en cuanto hay algo que contar */
+.progress {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffe27a;
+  line-height: 1.25;
+  text-align: center;
+}

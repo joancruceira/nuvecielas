@@ -20,7 +20,7 @@ function drawRound(): Question[] {
 
 export function QuizScreen({ onBack }: QuizScreenProps) {
   const player = useCurrentPlayer();
-  const { stats, recordWin } = useGameStats(player?.id ?? null, 'quiz', 'higher');
+  const { stats, recordWin } = useGameStats(player?.id ?? null, 'quiz', 'higher', 'Quiz Estelar');
 
   const [questions, setQuestions] = useState<Question[]>(drawRound);
   const [currentIndex, setCurrentIndex] = useState(0);

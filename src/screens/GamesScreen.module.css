@@ -66,3 +66,37 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+
+/* ─── Seguir donde dejó ─────────────────────────────────────────────────────── */
+.resume {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 10px 16px;
+  border: 2px solid rgba(255 226 122 / 0.45);
+  border-radius: var(--radius-md);
+  background: rgba(255 226 122 / 0.1);
+  color: var(--color-text);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.resume:hover { background: rgba(255 226 122 / 0.18); }
+.resume:active { transform: scale(0.985); }
+
+.resumeLabel {
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.resumeGame {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: #ffe27a;
+}

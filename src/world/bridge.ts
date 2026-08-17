@@ -27,6 +27,23 @@ export interface WorldArrival {
 /** Bolsa libre: cada juego guarda lo que necesita. */
 export type GameState = Record<string, unknown>;
 
+/**
+ * Una cosa que pasó. `game` y `type` son fijos; el resto lo pone cada juego
+ * (puntaje, nivel, estrellas), porque cada uno sabe qué vale la pena contar.
+ */
+export interface DiaryEntry {
+  game: string;
+  type: string;
+  /** Date.now() del momento */
+  at: number;
+  /** YYYY-MM-DD, para poder decir "ayer" */
+  day: string;
+  value?: number;
+  label?: string;
+  stars?: number;
+  record?: boolean;
+}
+
 interface NuveWorldApi {
   version: number;
   PLAYERS: WorldPlayer[];
@@ -55,6 +72,11 @@ interface NuveWorldApi {
     better: 'lower' | 'higher',
     playerId?: string | null,
   ): boolean;
+
+  /** Anota algo que pasó, para que el mundo pueda enterarse */
+  note(game: string, type: string, data?: Record<string, unknown>): boolean;
+  diary(playerId?: string | null, limit?: number): DiaryEntry[];
+  lastNote(playerId?: string | null): DiaryEntry | null;
 
   legacy: {
     unlocked(): number;

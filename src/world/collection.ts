@@ -26,6 +26,7 @@ export function useWishes(playerId: string | null) {
   const addWish = useCallback(() => {
     if (!playerId) return;
     world().addWish(playerId);
+    world().note('manolandia', 'deseo', { label: 'una estrella fugaz' });
     bump();
   }, [playerId]);
 
@@ -45,6 +46,8 @@ export function useGameStats(
   playerId: string | null,
   gameId: string,
   better: 'lower' | 'higher',
+  /** Cómo se llama el juego, para que el mundo pueda contarlo después */
+  label?: string,
 ) {
   const [, bump] = useReducer((n: number) => n + 1, 0);
 
@@ -61,10 +64,11 @@ export function useGameStats(
       const wins = Number(world().gameState(gameId, playerId).wins ?? 0);
       world().patchGameState(gameId, { wins: wins + 1 }, playerId);
       const isRecord = world().recordBest(gameId, 'best', value, better, playerId);
+      world().note(gameId, 'victoria', { value, record: isRecord, label });
       bump();
       return isRecord;
     },
-    [playerId, gameId, better],
+    [playerId, gameId, better, label],
   );
 
   return { stats, recordWin };
