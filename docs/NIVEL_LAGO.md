@@ -1,8 +1,35 @@
 # 🌊 Atravesando el Lago — diseño del nivel
 
-> **Estado:** propuesta para discutir. **Nada implementado, ningún sprite generado.**
 > **Repo:** `nuvecielasPlatformer` · nivel índice 4 (el último del juego)
-> **Fecha:** 2026-08-17.
+> **Fecha:** 2026-08-17. **Construido:** 2026-08-18.
+
+## Estado — qué de todo esto ya está en el juego
+
+| Pieza | Dónde |
+|---|---|
+| Los cinco enemigos del lago | `js/enemies/enemies_level5.js` |
+| Los 45 sprites | `img/level5/` + manifest `4:` en `asset_loader.js` |
+| Burbujas (ambiente, géiser y montable) | `js/lago.js` |
+| Corrientes | `js/lago.js` + `Level5.data.corrientes` |
+| Almeja con perla | `js/lago.js` (la perla es una estrella común puesta en su boca) |
+| Coral, algas, ruinas y la estatua | `js/lago.js`, se colocan como tiles 48-51 |
+| Coral punzante en vez de pinchos | `renderer_tiles.js`, con el flag `lago: true` |
+
+**Queda pendiente** una sola cosa de este documento: el **coral que respira** (el que
+se abre y se cierra con ritmo fijo). La almeja terminó cubriendo ese rol —trampa de
+timing que se puede leer y esperar— así que agregarlo sería repetir la lección.
+
+Dos decisiones se resolvieron distinto de lo escrito abajo, y por buenos motivos:
+
+- **El mapa quedó en 16 tiles de alto**, no más. La verticalidad la dan el géiser y
+  las burbujas montables, que llevan de la fila 12 a la 3: se siente alto sin tocar
+  la cámara.
+- **El empuje del agua no toca `player.js`.** `lago.js` corre después de
+  `Player.update()` y sólo modifica la VELOCIDAD; la posición y la colisión las
+  sigue integrando el jugador. Era el único punto del plan sin precedente y terminó
+  no necesitando ninguno.
+
+---
 
 ---
 
