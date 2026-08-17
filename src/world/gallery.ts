@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { todayISO } from './storage';
+import { world } from './bridge';
 
 /**
  * Las creaciones de la nena, guardadas DENTRO del mundo.
@@ -61,7 +61,7 @@ export async function saveDrawing(blob: Blob, playerId: string | null, laminaId:
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     playerId,
     laminaId,
-    createdAt: todayISO(),
+    createdAt: world().todayISO(),
     blob,
   };
   await tx('readwrite', store => store.put(drawing));

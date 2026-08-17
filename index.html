@@ -29,6 +29,9 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- El contrato compartido con el Bosque Mágico y Atrapa las Estrellas.
+         Va sin `defer` y antes del módulo: tiene que existir cuando React monta. -->
+    <script src="/nuve-world.js"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
