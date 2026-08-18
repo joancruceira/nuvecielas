@@ -209,7 +209,7 @@ python tools/sprites.py hoja.png --grilla 3x1 --nombre lechuza_death --alto 280
 
 ---
 
-## 6. Dos cosas que aparecieron al construirla
+## 6. Lo que apareció al construirla y al jugarla
 
 **La pelea se rompía sola.** Al probarla salió que, si le pegabas en cada
 aterrizaje, la lechuza volvía al piso con la ventana reseteada y se la podía
@@ -222,6 +222,26 @@ aterrizaje**, y la pelea completa dura unos 40 segundos.
 sea que el apagón —el corazón de la pelea— era invisible para quien jugara bien.
 Ahora también se decide al terminar el golpe, y encima cae mejor: el golpe que la
 pasa de fase la hace tambalear, y de ahí grita.
+
+**Miraba siempre para el otro lado.** Asumí que los sprites estaban dibujados
+mirando a la izquierda y están dibujados mirando a la **derecha**: el espejado
+quedó invertido y la lechuza le daba la espalda al jugador todo el tiempo. Se
+midió en vez de suponer —dónde cae el disco facial respecto del centro del
+cuerpo— y ahora se espeja al revés. Es el bug que más ensuciaba todo lo demás:
+un bicho que te da la espalda se lee como un bicho que no te ve.
+
+**Parecía un bucle fijo.** Dos causas, las dos arregladas:
+
+- Después de cada picada volvía **siempre a la misma percha**. Ahora sube a la
+  altura de la rama pero en horizontal se acerca a vos, así que nunca arranca
+  dos veces desde el mismo lugar.
+- Se tiraba **cuando se le cumplía un cronómetro**, no cuando lograba ponerse
+  encima. Ahora vuela al triple de velocidad (300 px/s) y sólo se lanza cuando
+  está a menos de 100 px de estar justo arriba tuyo. El tope de 2,8 s quedó
+  únicamente para que no se quede dando vueltas si corrés en círculos.
+
+**Era grande.** La caja pasó de 128×120 a **96×120** y el dibujo de 150 a 125 px
+de alto: la lechuza mide ahora 1,7 veces la nena en vez de 2,1.
 
 ---
 
