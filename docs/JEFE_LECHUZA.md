@@ -233,3 +233,53 @@ igual entre animaciones y las dejo con el nombre correcto en `img/level3/`.
 Mientras tanto la pelea **ya está construida y andando** con una lechuza dibujada
 por canvas: se puede jugar, se siente el grito y la oscuridad. Cuando lleguen los
 sprites entran solos, sin tocar la lógica.
+
+---
+
+## 8. Lo que llegó, y en qué se diferencia de lo pedido
+
+ChatGPT mandó **una sola imagen de 1942×809 con tres filas** en vez de seis hojas
+separadas. La calidad es muy buena, pero el reparto de cuadros no fue el pedido,
+así que la lista de animaciones se ajustó a lo que realmente vino:
+
+| Animación | Pedido | Llegó |
+|---|---|---|
+| `posado` | 2 | 2 ✅ |
+| `vuelo` | 4 | 4 ✅ |
+| `picada` | 2 | **3** — vino un cuadro extra de alas altas y quedó mejor |
+| `aterrizado` | — | **2** ← nuevo |
+| `grito` | 3 | **2** |
+| `damage` | 2 | 2 ✅ |
+| `death` | 3 | 3 ✅ |
+
+**`aterrizado` no estaba en el plan y es la mejora más grande.** Llegaron dos
+cuadros de la lechuza encogida, con las alas caídas y las patas plantadas. Ésa es
+exactamente la ventana en la que le pegás, y antes reusaba los cuadros de la
+rama: ahora el momento vulnerable se distingue de un vistazo, sin cartel.
+
+Quedaron tres cuadros **sin usar**, por si hacen falta después: uno de vuelo con
+las alas muy altas, uno frontal con las alas abiertas y las garras adelantadas
+(sería un golpe de frente buenísimo), y uno de la lechuza posada de perfil.
+
+### El problema que había que resolver antes de cortar
+
+Los cuadros de vuelo tienen **las alas por encima de la cabeza**. Como el motor
+escala por la altura de la imagen, escalarlos todos a la misma altura hacía que
+el cuerpo se viera chico justo al volar: el mismo error que dejó gigante a la
+serpiente del nivel 2, al revés.
+
+La solución no fue medir el alto sino **el disco facial**: la cara es lo único
+que no cambia de tamaño entre poses. Se contó cuántos píxeles de cara clara tiene
+cada cuadro y se escaló cada uno para que esa medida sea idéntica (√área = 36).
+Después todos se pegaron **en un lienzo común de 378×284, apoyados abajo y
+centrados**. Así los PNG miden todos igual, el motor los escala con un solo
+factor y la lechuza no cambia de tamaño al pasar de posada a volando.
+
+De paso, la misma detección de píxeles amarillos sirvió para medir **dónde está
+cada ojo en cada cuadro**. Esa tabla es la que usa el apagón para poner los dos
+faroles sobre la cabeza: la cabeza se mueve muchísimo entre poses, y sin la tabla
+los ojos quedaban flotando en el aire al lado del bicho.
+
+> Con luz normal los ojos ya no se dibujan por código: los sprites los traen
+> pintados y agregarles brillo encima sólo los ensuciaba. Los faroles existen
+> únicamente durante el apagón, que es cuando son la única información que tenés.
