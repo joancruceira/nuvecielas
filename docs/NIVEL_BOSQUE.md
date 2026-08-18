@@ -241,3 +241,41 @@ niebla, y las zarzas y el suelo ya no son rectángulos de color. Se puede jugar.
 
 Cuando lleguen los sprites entran solos, sin tocar la lógica: el dibujado ya está
 separado (`drawImage` si hay sprite, forma de canvas si no), igual que en el lago.
+
+---
+
+## 6. Lo que llegó, y en qué se diferencia de lo pedido
+
+Llegaron **12 hojas y 55 sprites**, bastante más de lo pedido, y en varios casos
+mejor de lo que había diseñado. La lista de cuadros se ajustó a lo que vino:
+
+| Pieza | Pedido | Llegó |
+|---|---|---|
+| `hongo_salto` | 2 cuadros | **5** — aplastón completo, se usan 3 |
+| `flor` | 2 cuadros (abierta/cerrada) | **6** — apertura de verdad |
+| `hongo_deco` | 3 | **12** |
+| `planta` | 4 | **10** |
+| `zarza` | 2 | **6** (incluye un ARCO, todavía sin usar) |
+| `suelo` | 3 celdas | **6 de superficie + 3 de tierra** |
+| `arbol_manos` | 1 | **4** |
+| luciérnagas | — | **6 cuadros** de aleteo, que no había pedido |
+
+**El árbol salió mejor que el diseño.** Pedí "huellas de manos en la corteza" y
+ChatGPT dibujó **manos con cara** — que es exactamente lo que es una Nuveciela.
+El árbol no sólo se acuerda de ellas: las tiene adentro. No se toca.
+
+**`ground0` y `ground1` no se usaron como suelo.** Vinieron como trozos de
+terreno enteros (losa, rampa, escalón, plataforma flotante, esquina) en vez de
+celdas repetibles. Son muy buenos y quedan disponibles para armar plataformas
+grandes más adelante; el tronco caído de `ground1` sí entró como planta.
+
+### Los dos ajustes que hubo que hacer al cortar
+
+**La tierra dibujaba una grilla.** Recortada justo abajo del pasto, cada celda
+llevaba la franja de transición de raíces, y repetida cada 48 px el suelo se veía
+como baldosas. Se recorta del 72 % para abajo —tierra maciza— y además se espeja
+en columnas alternas, con lo que la repetición desaparece.
+
+**El orden de los cuadros del hongo no es el del dibujo.** La detección los
+ordena por filas, y como los cuadros aplastados están más abajo en la hoja
+quedaron al final. El aplastón real es `0 → 3 → 4`, no `0 → 1 → 2`.
