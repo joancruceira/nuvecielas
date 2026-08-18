@@ -242,3 +242,46 @@ teñida hacia carbón y brasa. Se puede jugar.
 Cuando lleguen los sprites entran solos y el tinte del piso se retira: el dibujado
 ya está separado (`drawImage` si hay sprite, forma de canvas si no), igual que en
 el lago y el bosque.
+
+---
+
+## 6. Lo que llegó, y en qué se diferencia de lo pedido
+
+Llegaron **9 hojas y 47 sprites**. La lista se ajustó a lo que vino:
+
+| Pieza | Pedido | Llegó |
+|---|---|---|
+| `piso_ruina` | 5 celdas | **5** ✅ (una de ellas es una rejilla, no se usa: hay hoja propia) |
+| `piso_fragil` | 3 cuadros | **5** — deterioro completo, se usan 3 |
+| `llamarada` | rejilla + 4 de fuego | **5 cuadros con la rejilla YA INCLUIDA** |
+| `antorcha` | 4 cuadros de una llama | **5 antorchas DISTINTAS** |
+| `candelabro` | 3 cuadros | **5 candelabros distintos, con su cadena** |
+| `escombro` | 5 props | **18** |
+| `retrato` | 4 | **4** ✅ |
+
+**Los retratos salieron exactos.** Las cuatro hermanas son manos con cara y
+melena, en marcos dorados, con tela quemada colgando y hasta una calavera en el
+cuarto. Es el gancho y no hay que tocarle nada.
+
+### Los tres ajustes que hubo que hacer
+
+**Las antorchas y los candelabros NO son animaciones.** Pedí cuadros de una misma
+llama y llegaron cinco modelos distintos: uno con estandarte, uno con cadenas,
+uno con musgo. Ciclarlos habría hecho que el soporte mutara solo. Se usan como
+**variantes fijas por columna** —el castillo gana variedad— y el parpadeo lo pone
+el charco de luz, que ya se dibujaba por código.
+
+**La llamarada trae la rejilla adentro.** Estaba preparado para dibujar rejilla y
+fuego por separado; los cinco cuadros vienen con la rejilla incluida y todos
+alineados a la misma base. Se dibuja uno solo y se elige por altura de la llama.
+
+**Los cuadros con base común no se recortan a su caja.** Las hojas de losas, de
+agrietado y de fuego tienen todos los cuadros alineados abajo. Recortando cada
+uno a su propia caja se pierde esa alineación y la rejilla bailaría al crecer la
+llama; se cortan por columnas de igual ancho conservando el alto entero.
+
+### Y una cosa que los sprites no resolvían
+
+La baldosa frágil ENTERA se parece demasiado al piso normal: las dos son losas de
+piedra agrietada. Y de nada sirve avisar cuando ya la pisaste. Se le agregó por
+código un **latido de brasa** que la separa del resto *antes* de tocarla.
