@@ -1,54 +1,27 @@
-# ⭐ Dos sprites pendientes — Estrellaria y el jefe Fantasma
+# ⭐ Sprites pendientes — queda uno: el jefe Fantasma
 
 > **Repo:** `nuvecielasPlatformer` · **Fecha:** 2026-08-18.
-> Los dos están **ya funcionando en el juego** con dibujo provisorio. Cuando
-> lleguen los sprites entran solos, sin tocar la lógica.
+> Estrellaria ya está resuelta: su dibujo existía en el hub desde antes.
+> El jefe funciona con el sprite viejo hasta que llegue el nuevo.
 
 ---
 
-## 1. Estrellaria — la quinta Nuveciela
+## 1. Estrellaria — RESUELTO ✅
 
-Ya se puede elegir y jugar. Hoy se ve como **un rectángulo rosa con una E**,
-porque es lo único que hay hasta que exista `img/estrellaria.png`.
+**No hacía falta generar nada: ya estaba dibujada.** Vivía en el hub
+(`src/assets/images/Estrellaria.png`, 408×612) desde antes, con ficha completa en
+`src/data/characters.ts` — emoji 🌟, "¡La que encuentra lo que nadie ve!", color
+`#F7A8C4` — y jugaba en Memoria Mágica. Lo único que le faltaba era estar en el
+plataformer.
 
-**Su identidad es el disparo, no el movimiento.** Las otras cuatro se eligen por
-cómo se mueven —doble salto, deslizarse, flotar, volar—; ésta se elige por cómo
-ataca: es la que tira más rápido del juego (una estrella cada 0,32 s, contra 0,45
-de la más rápida anterior) y cada tiro sale de un color distinto, rotando siete.
+Se copió a `public/bosque/img/estrellaria.png` recortada y llevada a **248 px de
+alto**, que es la altura exacta de sus cuatro hermanas. Su proporción original
+(0,667) ya coincidía con la de Ciela, Lunaria y Nuve (0,665): está dibujada en la
+misma tanda.
 
-### 🎨 El sprite
-
-Mismo formato que las otras cuatro: **un solo cuadro, de cuerpo entero, mirando
-de frente**, sobre fondo blanco. Miralas en `img/nuveciela.png`, `img/ciela.png`,
-`img/lunaria.png` y `img/nuve.png` para copiar el estilo — es importante que las
-cinco parezcan hermanas.
-
-> Pixel art de videojuego, estilo retro detallado de 16 bits, calidad
-> profesional. FONDO BLANCO LISO. Sin sombra proyectada, sin piso, sin marco,
-> sin texto. Un solo personaje, de cuerpo entero, de frente.
->
-> Una **Nuveciela**: una criatura con forma de MANO ABIERTA de pie sobre sus
-> dedos, como si los dedos fueran piernas. Sobre el dorso de la mano tiene una
-> cara sencilla y dulce —dos ojos redondos grandes y una sonrisa chiquita— y de
-> la parte de arriba le cae una melena larga y ondulada que le cubre los
-> costados. Sin brazos.
->
-> Ésta se llama **Estrellaria**. Su melena es **rosa fuerte con mechones
-> turquesa, amarillo y violeta**, como si tuviera un cielo estrellado en el
-> pelo. Le brillan **estrellitas de colores entre el pelo**, chiquitas y
-> repartidas. La piel de la mano, del mismo tono cálido que sus hermanas.
->
-> Alegre y despierta, no traviesa ni burlona.
-
-```bash
-python tools/sprites.py hoja.png --auto --esperados 1 --nombre estrellaria --estilo unico --alto 320
-```
-
-Va en `img/estrellaria.png`, en la raíz de `img/` como las otras cuatro.
-
-> Ojo con una: **sin estrellas sueltas volando alrededor**. El juego dibuja las
-> estrellas del disparo por código; si vienen pegadas al sprite, el personaje se
-> ve más ancho de lo que es y queda descentrado sobre su hitbox.
+> **El color y el emoji salen del hub, no del plataformer.** Es el mismo
+> personaje en las dos apps y no puede tener dos colores. Yo le había puesto un
+> rosa distinto al inventarla en el juego; ahora usa el suyo.
 
 ---
 
@@ -103,6 +76,6 @@ los saca como `fantasma0..3`, hay que renombrarlos (o pasámelos y lo hago yo).
 
 ## 3. Mientras tanto
 
-Los dos andan. Estrellaria es un rectángulo rosa con una E —del color que le
-corresponde, no violeta— y el jefe es el fantasma de antes, ahora bastante más
-grande. Se puede jugar todo.
+Estrellaria ya juega con su dibujo de verdad, del mismo alto que sus hermanas. El
+jefe sigue con el fantasma de antes, ahora bastante más grande. Se puede jugar
+todo.
