@@ -22,14 +22,19 @@ perrero. La regla del mundo real está respetada casi en todo.
 
 ### Lo que hay hoy
 
+El mapa pasó de **200 a 298 columnas**. Quedó así:
+
 | Zona | Columnas | Qué es |
 |---|---|---|
 | 1 | 0-44 | Costanera tranquila — se aprenden los controles |
-| 2 | 45-89 | Zona urbana — el colectivo abandonado como plataforma |
-| 3 | 92-129 | Sector deteriorado — pozos de agua con tablón |
-| 4 | 130-159 | Río Paraná / tormenta — plataformas de metal |
-| 5 | 160-189 | Arena del jefe |
-| 6 | 190-199 | Rescate de Pablo |
+| 2 | **45-79** | **Parque de la Independencia** — nueva |
+| 3 | 80-124 | Zona urbana — el colectivo abandonado como plataforma |
+| 4 | **125-159** | **Peatonal Córdoba** — nueva |
+| 5 | 160-197 | Sector deteriorado — pozos de agua con tablón |
+| 6 | **198-227** | **Túneles del Parque España** — nueva |
+| 7 | 228-257 | Río Paraná / tormenta — plataformas de metal |
+| 8 | 258-285 | Corralón municipal de noche |
+| 9 | 286-297 | El jefe y el rescate de Pablo |
 
 **Los corazones se quedan como están: eliminan.** Se evaluó que convencieran en
 vez de eliminar y la decisión fue mantener lo que ya funciona.
@@ -242,3 +247,49 @@ Sendero Nocturno.
 
 **Más villanos humanos.** Dos y un jefe alcanzan. El problema del nivel nunca fue
 que faltaran enemigos: era que la calle estaba vacía entre uno y otro.
+
+
+---
+
+## 7. Cómo quedó — 2026-08-20
+
+Las seis hojas y los tres fondos entraron. Lo que pasó al integrarlos:
+
+### Las columnas del final dejaron de moverse solas
+
+Estirar el mapa corría al jefe, a Pablo y a la gema, y cada vez había que ir a
+buscarlos a mano. Ahora viven en `S.COLS` con nombre propio
+(`BOSS`, `PABLO`, `GEMA`, `PEDESTAL`) y el mapa se estira sin romperlos.
+
+### Los props salían todos iguales — y no era casualidad
+
+La variante se elegía con `(columna * 7) % cantidad`. En la peatonal los props
+van cada 8 columnas y hay 4 variantes: `7 × 8` es múltiplo de 4, así que **salía
+siempre el mismo puesto de diarios, cuatro veces**. Es aliasing de manual.
+
+Ahora la variante se elige contando **cuántos props van colocados**, no en qué
+columna caen. Con eso el ciclo es 0, 1, 2, 3 y no puede repetirse.
+
+### Crecían árboles adentro del túnel
+
+Los bancos, los árboles y las farolas se dibujaban si la columna estaba en
+`c < 90 || c >= 190`. Ese `190` era *el rescate*, cuando el mapa terminaba en la
+200. Con el mapa en 298, `190` pasó a ser **el túnel** — y también el río y el
+corralón de noche. Ahora el tramo con arboleda termina en la 125 y se acabó.
+
+### El túnel
+
+Es piso oscuro de verdad (`darkGround`), no pasto pintado de negro, y lleva la
+oscuridad encima: se ve lo que tenés cerca y nada más, con las bocas de entrada
+y salida en degradé para que te trague en vez de empezar de golpe. Sin inventar
+nada mágico: la luz es la del celular, que cualquiera lleva.
+
+### Lo que quedó chequeado
+
+`0` enemigos sin piso, `0` gatitos sin piso, `0` columnas vacías en 298, y el
+jefe, Pablo y la gema en 286 / 290 / 294. Sin errores de consola.
+
+> **Ojo con el servidor de preview.** `.claude/launch.json` tenía `platformer`
+> apuntando a `scratch/nuvecielas-platformer`, que es otro clon del mismo repo y
+> está decenas de commits atrás. Se agregó `bosque` (puerto 8081), que sirve
+> `public/bosque` — el submódulo donde está el trabajo de verdad.

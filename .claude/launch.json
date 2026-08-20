@@ -4,14 +4,39 @@
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 5173
     },
     {
       "name": "platformer",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8080", "--directory", "C:/Users/Joan/.gemini/antigravity/scratch/nuvecielas-platformer"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "-y",
+        "http-server",
+        "C:/Users/Joan/.gemini/antigravity/scratch/nuvecielas-platformer",
+        "-p",
+        "8080",
+        "-c-1",
+        "--silent"
+      ],
       "port": 8080
+    },
+    {
+      "name": "bosque",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "-y",
+        "http-server",
+        "C:/Users/Joan/.gemini/antigravity/scratch/nuvecielas/public/bosque",
+        "-p",
+        "8081",
+        "-c-1",
+        "--silent"
+      ],
+      "port": 8081
     }
   ]
 }
